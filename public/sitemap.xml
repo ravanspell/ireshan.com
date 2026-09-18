@@ -1,23 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Fragment URLs (/#aboutme, /#experience, /#certifications) were removed:
+  crawlers strip the fragment, so all three were duplicate entries for "/".
+  Blog posts are not listed here - they are reachable from /blog. Replacing
+  this file with an app/sitemap.ts that reads published posts would list them.
+-->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://ireshanpathirana.com/</loc>
+    <loc>https://ireshan.com/</loc>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://ireshanpathirana.com/#aboutme</loc>
-    <changefreq>yearly</changefreq>
+    <loc>https://ireshan.com/blog</loc>
+    <changefreq>weekly</changefreq>
     <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://ireshanpathirana.com/#experience</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-   <url>
-    <loc>https://ireshanpathirana.com/#certifications</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
   </url>
 </urlset>

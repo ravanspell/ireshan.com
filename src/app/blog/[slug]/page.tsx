@@ -8,7 +8,7 @@ import Tag from '@/components/atoms/Tag/Tag';
 import ProfileImage from '@/components/molecules/ProfileImage/ProfileImage';
 
 /**
- * Rendered on demand and then cached, rather than prerendered at build time —
+ * Rendered on demand and then cached, rather than prerendered at build time -
  * `generateStaticParams` would make every build require a reachable database.
  * Publishing calls `revalidatePath` on this route, so edits appear at once.
  */

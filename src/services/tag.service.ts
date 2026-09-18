@@ -17,7 +17,7 @@ export class TagService extends BaseService {
     super();
   }
 
-  /** See the note on `PostService.requireAuthorId` — same reasoning. */
+  /** See the note on `PostService.requireAuthorId` - same reasoning. */
   private async requireUser(): Promise<void> {
     const user = await this.authService.getCurrentUser();
     if (!user) this.unauthorized();

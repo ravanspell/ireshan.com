@@ -19,7 +19,7 @@ export default defineConfig({
   },
   // Read via process.env rather than Prisma's `env()` helper, and omitted entirely
   // when unset: this module is evaluated by *every* CLI command, so a hard throw
-  // here would break `prisma generate` — and with it `npm install`'s postinstall —
+  // here would break `prisma generate` - and with it `npm install`'s postinstall -
   // on a fresh clone that has no `.env` yet. Commands that genuinely need a
   // connection report the missing datasource themselves.
   ...(migrationUrl ? { datasource: { url: migrationUrl } } : {}),

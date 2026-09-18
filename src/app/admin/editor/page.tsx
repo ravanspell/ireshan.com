@@ -6,7 +6,7 @@ import { TagController } from '@controllers/tag.controller';
 
 /**
  * Every existing tag, for the editor's autocomplete. A failure here is not
- * worth losing the editor over — the field still accepts free text, so an
+ * worth losing the editor over - the field still accepts free text, so an
  * empty suggestion list only costs the author a shortcut.
  */
 async function getTagSuggestions(): Promise<string[]> {
@@ -18,7 +18,7 @@ async function getTagSuggestions(): Promise<string[]> {
 /**
  * Editor page.
  *
- * A Server Component so an existing post can be loaded before render — the only
+ * A Server Component so an existing post can be loaded before render - the only
  * client-side piece is the editor itself. `?id=` switches it from "new post" to
  * editing an existing one; without it, a blank draft.
  */
@@ -38,7 +38,7 @@ export default async function EditorPage({
     );
   }
 
-  // Drafts included — this read requires a session, which middleware has
+  // Drafts included - this read requires a session, which middleware has
   // already enforced for /admin, and PostService re-checks regardless.
   const [result, tagSuggestions] = await Promise.all([
     resolve(PostController).getPostById(id),

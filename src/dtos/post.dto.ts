@@ -3,7 +3,7 @@ import { z } from 'zod';
 /**
  * Editor.js `OutputData`.
  *
- * The editor sends a block document, not a string — validating its shape here
+ * The editor sends a block document, not a string - validating its shape here
  * is what lets `content` be a real `jsonb` column instead of an opaque blob.
  * Block `data` is left open on purpose: each Editor.js tool defines its own,
  * and pinning it would break the moment a tool is added.
@@ -40,7 +40,7 @@ const slug = z
 /**
  * Tags are addressed by name, not id: the editor is a free-text field, and a
  * name the author types may not exist yet. `PostService` resolves each name to
- * a tag row — creating the missing ones — before the join table is written.
+ * a tag row - creating the missing ones - before the join table is written.
  */
 const tagNames = z
   .array(z.string().trim().min(1, 'A tag cannot be empty').max(50, 'Tag must be less than 50 characters'))

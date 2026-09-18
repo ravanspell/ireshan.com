@@ -40,7 +40,7 @@ export class TagRepository extends BaseRepository {
   }
 
   /**
-   * Find tag by slug. Posts are not joined in — see `findById`.
+   * Find tag by slug. Posts are not joined in - see `findById`.
    */
   async findBySlug(slug: string) {
     const tag = await this.db.tag.findUnique({ where: { slug } });

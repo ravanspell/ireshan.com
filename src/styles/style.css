@@ -14,7 +14,7 @@
 
 body {
   font-family: var(--font-sans);
-  font-weight: 450; /* Inter @450 — the Supabase signature weight */
+  font-weight: 450; /* Inter @450 - the Supabase signature weight */
   background-color: var(--background);
   color: var(--foreground);
 }
@@ -38,11 +38,11 @@ html {
   /* Automatically centers the container */
   margin-inline: auto;
   /* Sets the maximum width for the container */
-  max-width: 70.5rem; /* 1128px — their --content-width-screen-xl */
+  max-width: 70.5rem; /* 1128px - their --content-width-screen-xl */
 }
 
 @theme inline {
-  /* Semantic surface — consumed by src/components/atoms/* */
+  /* Semantic surface - consumed by src/components/atoms/* */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -72,7 +72,7 @@ html {
   --color-ring: var(--ring);
   --color-field: var(--field);
 
-  /* Sidebar — consumed by src/components/atoms/sidebar. Recessed one step below
+  /* Sidebar - consumed by src/components/atoms/sidebar. Recessed one step below
      the page so the inset content panel reads as raised above it. */
   --color-sidebar: oklch(from var(--background) calc(l - 0.015) c h);
   --color-sidebar-foreground: var(--foreground);
@@ -83,7 +83,7 @@ html {
   --color-sidebar-border: var(--border);
   --color-sidebar-ring: var(--ring);
 
-  /* Type scale — one notch tighter than stock Tailwind */
+  /* Type scale - one notch tighter than stock Tailwind */
   --text-xs: 0.75rem;
   --text-xs--line-height: calc(1 / 0.75);
   --text-sm: 0.875rem;

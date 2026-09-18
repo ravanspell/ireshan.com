@@ -7,7 +7,7 @@ import { SidebarInset, SidebarProvider } from '@/components/atoms/sidebar';
 import { resolve } from '@/lib/di/container';
 import { AuthController } from '@controllers/auth.controller';
 
-/** Only the fields the sidebar shows — the full Supabase user never reaches the client. */
+/** Only the fields the sidebar shows - the full Supabase user never reaches the client. */
 async function getAdminUser(): Promise<AdminUser | null> {
   const result = await resolve(AuthController).getCurrentUser();
   const user = result.success ? result.data : null;

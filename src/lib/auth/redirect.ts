@@ -15,7 +15,7 @@ export const NEXT_PARAM = 'next';
 /**
  * Validate a post-login redirect target.
  *
- * The `next` value is attacker-controlled — anyone can hand out a link to
+ * The `next` value is attacker-controlled - anyone can hand out a link to
  * `/login?next=<anything>`, and an unvalidated redirect there would send a
  * user who just typed their password straight to an off-site copy of this
  * login page. So a value is only used once it has passed through here, and it
@@ -30,7 +30,7 @@ export function safeNextPath(value: string | null | undefined): string | null {
 
   // Must be an absolute, same-origin path. `//evil.com` and `/\evil.com` are
   // protocol-relative URLs that browsers resolve off-site, and a backslash is
-  // normalised to `/` before that resolution happens — so both have to be
+  // normalised to `/` before that resolution happens - so both have to be
   // rejected before a leading `/` can be read as "internal".
   if (!value.startsWith('/')) return null;
   if (value.startsWith('//') || value.startsWith('/\\')) return null;

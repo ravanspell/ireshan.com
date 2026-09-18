@@ -32,7 +32,7 @@ import { TagController } from '@controllers/tag.controller';
  *
  * Every injectable class in the app is registered here explicitly. Nothing is
  * left to tsyringe's auto-registration fallback, which silently constructs an
- * unregistered class on demand — for `Db` that fallback would mean a second
+ * unregistered class on demand - for `Db` that fallback would mean a second
  * `PrismaClient` (and a second connection pool) instead of the shared one.
  */
 
@@ -43,7 +43,7 @@ type Constructor<T> = new (...args: any[]) => T;
  * Every class the container can hand out.
  *
  * Listing them here rather than letting the decorator self-register keeps
- * registration independent of import order — a provider is registered because
+ * registration independent of import order - a provider is registered because
  * the composition root was evaluated, not because something happened to import
  * the provider's module first.
  *
@@ -75,8 +75,8 @@ let bootstrapped = false;
  *
  * Next.js can evaluate this module more than once (RSC, SSR and route-handler
  * graphs are separate, and dev HMR re-evaluates on edit), so this is written to
- * be idempotent. The `Db` instance it registers is itself process-global — see
- * `globalForPrisma` in `@lib/db` — so duplicate module instances still share
+ * be idempotent. The `Db` instance it registers is itself process-global - see
+ * `globalForPrisma` in `@lib/db` - so duplicate module instances still share
  * one `PrismaClient`.
  */
 export function bootstrapContainer(): DependencyContainer {

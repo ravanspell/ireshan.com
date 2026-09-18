@@ -22,7 +22,7 @@ export class AuthError extends Error {
  * Handles authentication business logic using Supabase Auth.
  *
  * A fresh Supabase server client is created per call since it reads
- * the current request's cookies() — it cannot be cached on the instance.
+ * the current request's cookies() - it cannot be cached on the instance.
  */
 @Injectable()
 export class AuthService extends BaseService {
@@ -74,7 +74,7 @@ export class AuthService extends BaseService {
     } = await supabase.auth.getUser();
 
     if (error) {
-      // "Auth session missing" is the common case — no logged-in user.
+      // "Auth session missing" is the common case - no logged-in user.
       // Log anything else so unexpected failures aren't silently treated as "logged out".
       if (error.message !== "Auth session missing!") {
         console.error("getCurrentUser error:", error.message);

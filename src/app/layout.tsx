@@ -18,22 +18,68 @@ const sourceCodePro = Source_Code_Pro({
   subsets: ['latin'],
 });
 
+const SITE_URL = 'https://ireshan.com';
+
+const SITE_DESCRIPTION =
+  'Senior Full Stack AI Engineer, building production AI systems: RAG pipelines, agentic workflows and LLM-powered products in TypeScript, Python and React.';
+
 export const metadata: Metadata = {
-  title: 'Ireshan Pathirana | Software Engineer',
-  description:
-    'Software Engineer specializing in React.js, Node.js, Java Spring Boot and scalable web applications.',
-  keywords: ['Software Engineer', 'React Developer', 'Frontend Engineer'],
+  metadataBase: new URL(SITE_URL),
+  title: {
+    // `default` is used by this route; `template` wraps any child route that
+    // sets a plain string title, so /blog renders "Blog | Ireshan Pathirana"
+    // and a post renders "<post title> | Ireshan Pathirana".
+    default: 'Ireshan Pathirana | AI Engineer',
+    template: '%s | Ireshan Pathirana',
+  },
+  description: SITE_DESCRIPTION,
+  keywords: [
+    'Ireshan Pathirana',
+    'AI Engineer',
+    'Full Stack AI Engineer',
+    'LLM Engineer',
+    'RAG',
+    'Agentic Workflows',
+    'LangGraph',
+    'LangChain',
+    'TypeScript',
+    'Node.js',
+    'Python',
+    'FastAPI',
+    'React Developer',
+    'Next.js',
+  ],
+  authors: [{ name: 'Ireshan Pathirana', url: SITE_URL }],
+  creator: 'Ireshan Pathirana',
   openGraph: {
-    title: 'Ireshan Pathirana | Software Engineer',
-    description:
-      'Software Engineer specializing in React.js, Node.js, Java Spring Boot and scalable web applications.',
+    title: 'Ireshan Pathirana | AI Engineer',
+    description: SITE_DESCRIPTION,
+    siteName: 'Ireshan Pathirana',
     locale: 'en_US',
     type: 'website',
-    url: 'https://ireshanpathirana.com',
+    url: SITE_URL,
+  },
+  twitter: {
+    card: 'summary',
+    title: 'Ireshan Pathirana | AI Engineer',
+    description: SITE_DESCRIPTION,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      // Let Google use full-length text snippets, large image previews and
+      // full video previews rather than its conservative defaults.
+      'max-snippet': -1,
+      'max-image-preview': 'large',
+      'max-video-preview': -1,
+    },
   },
   alternates: {
     // avoids duplicate indexing issues
-    canonical: 'https://ireshanpathirana.com',
+    canonical: '/',
   },
 };
 

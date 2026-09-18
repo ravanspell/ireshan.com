@@ -9,7 +9,7 @@ export interface TagInputProps {
   value: string[];
   onChange: (tags: string[]) => void;
   /**
-   * Existing tag names, offered as autocomplete. Picking one isn't required —
+   * Existing tag names, offered as autocomplete. Picking one isn't required -
    * a name that doesn't exist yet is created when the post is saved.
    */
   suggestions?: string[];

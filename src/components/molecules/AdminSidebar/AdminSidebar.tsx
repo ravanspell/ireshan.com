@@ -26,7 +26,7 @@ interface AdminSidebarProps extends React.ComponentProps<typeof Sidebar> {
  * CMS sidebar, after shadcn's `sidebar-07` / `dashboard-01` blocks.
  *
  * Collapses to an icon rail on desktop (⌘B or the header trigger) and becomes
- * an off-canvas sheet on mobile — both handled by the `Sidebar` primitive.
+ * an off-canvas sheet on mobile - both handled by the `Sidebar` primitive.
  */
 export default function AdminSidebar({ user, ...props }: AdminSidebarProps) {
   const pathname = usePathname();

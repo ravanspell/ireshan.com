@@ -22,7 +22,7 @@ export interface Post {
   title: string;
   slug: string;
   /**
-   * Absent on list queries built with `includeContent: false` — the blog index
+   * Absent on list queries built with `includeContent: false` - the blog index
    * renders from `excerpt` instead. Guard before rendering.
    */
   content?: EditorContent;
@@ -44,7 +44,7 @@ export interface Post {
 }
 
 /**
- * Map a post row — with its join rows, where they were included — to the model.
+ * Map a post row - with its join rows, where they were included - to the model.
  */
 export function toPost(row: PostRowWithTags): Post {
   return {

@@ -102,7 +102,7 @@ export class PostController extends BaseController {
   }
 
   /**
-   * Get a published post by slug — the public blog route.
+   * Get a published post by slug - the public blog route.
    */
   async getPublishedPostBySlug(slug: string) {
     try {
@@ -114,7 +114,7 @@ export class PostController extends BaseController {
   }
 
   /**
-   * Get all published posts — the public blog index.
+   * Get all published posts - the public blog index.
    */
   async getPublishedPosts() {
     try {
@@ -138,7 +138,7 @@ export class PostController extends BaseController {
   }
 
   /**
-   * Get a post by id including drafts — what the editor loads. Requires a session.
+   * Get a post by id including drafts - what the editor loads. Requires a session.
    */
   async getPostById(id: string) {
     try {
@@ -150,7 +150,7 @@ export class PostController extends BaseController {
   }
 
   /**
-   * Get all posts including drafts — the admin list. Requires a session.
+   * Get all posts including drafts - the admin list. Requires a session.
    */
   async getAllPosts(options?: { includeContent?: boolean }) {
     try {

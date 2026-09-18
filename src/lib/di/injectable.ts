@@ -16,14 +16,14 @@ export const Scope = {
 
   /**
    * One instance for the whole process, shared by every concurrent request.
-   * Only for classes that hold nothing but their injected dependencies —
+   * Only for classes that hold nothing but their injected dependencies -
    * storing a user, a `cookies()`-bound client or a request id on `this` in a
    * singleton leaks it across requests.
    */
   Singleton: Lifecycle.Singleton,
 
   /**
-   * One instance per `resolve()` call — i.e. shared within a single object
+   * One instance per `resolve()` call - i.e. shared within a single object
    * graph, fresh for the next one. Use when two collaborators in the same
    * graph must see the same instance without it outliving the request.
    */
@@ -56,7 +56,7 @@ type Constructor<T> = new (...args: any[]) => T;
  * Wraps tsyringe's `injectable()` and records the scope as metadata; the
  * composition root in `registry.ts` reads it back and registers the class
  * accordingly. Declaring the lifetime on the class keeps it next to the code
- * that has to honour it — a class annotated `Singleton` is making a promise
+ * that has to honour it - a class annotated `Singleton` is making a promise
  * about its own fields.
  *
  * @example

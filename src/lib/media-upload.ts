@@ -7,7 +7,7 @@ import {
   isMediaContentType
 } from '@lib/constants/media';
 
-/** Longest edge a blog image is stored at — wider than the post column at 2x. */
+/** Longest edge a blog image is stored at - wider than the post column at 2x. */
 const MAX_IMAGE_EDGE = 1600;
 const WEBP_QUALITY = 0.82;
 
@@ -33,7 +33,7 @@ async function compressImage(file: File): Promise<File> {
   try {
     bitmap = await createImageBitmap(file, { imageOrientation: 'from-image' });
   } catch {
-    return file; // Undecodable here — let the upload proceed and fail or succeed as is.
+    return file; // Undecodable here - let the upload proceed and fail or succeed as is.
   }
 
   const scale = Math.min(1, MAX_IMAGE_EDGE / Math.max(bitmap.width, bitmap.height));

@@ -5,7 +5,7 @@ import { ROUTES } from '@lib/constants/routes';
 
 /**
  * Regenerate at most once an hour. Writes call `revalidatePath` on this route,
- * so publishing shows up immediately — this is only the ceiling for changes
+ * so publishing shows up immediately - this is only the ceiling for changes
  * that happen outside the app.
  */
 export const revalidate = 3600;
@@ -24,8 +24,8 @@ export default async function BlogIndexPage() {
   const result = await resolve(PostController).getPublishedPosts();
 
   if (!result.success) {
-    // Deliberately fatal. The only way this fails is infrastructure — the index
-    // takes no user input — and a caught error here would be prerendered and
+    // Deliberately fatal. The only way this fails is infrastructure - the index
+    // takes no user input - and a caught error here would be prerendered and
     // then cached as an empty blog for a full revalidate window. Throwing fails
     // the build instead, and at runtime ISR keeps serving the last good page.
     throw new Error(`Failed to load blog index: ${result.error ?? 'unknown error'}`);

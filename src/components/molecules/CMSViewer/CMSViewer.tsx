@@ -10,7 +10,7 @@ interface CMSViewerProps {
 
 /**
  * `@editorjs/code` renders into a fixed `min-height: 200px` textarea with no
- * resize logic of its own — in the editor the author drags it taller by hand.
+ * resize logic of its own - in the editor the author drags it taller by hand.
  * A reader can't, so anything longer sits clipped behind an inner scrollbar.
  */
 function growCodeBlocks(holder: HTMLElement) {

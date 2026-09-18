@@ -2,8 +2,8 @@
  * Upload rules for post media, shared by the browser (to reject a file before
  * any round-trip) and `MediaService` (which is the enforcing check).
  *
- * The bucket itself repeats the size cap and MIME list — see the
- * `blog_media_bucket` migration — so a signed upload URL can't be used to store
+ * The bucket itself repeats the size cap and MIME list - see the
+ * `blog_media_bucket` migration - so a signed upload URL can't be used to store
  * something these rules would have refused. Change both together.
  */
 export const MEDIA_BUCKET = 'blog-media';

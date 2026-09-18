@@ -50,7 +50,7 @@ h6.ce-header {
 /* 3. Code blocks: the tool hardcodes a light palette, unreadable on this
    dark body. Applies to the editor and the viewer alike.
 
-   Qualified with `textarea` for the same reason the headings above are — the
+   Qualified with `textarea` for the same reason the headings above are - the
    tool injects its own stylesheet into <head> when it's imported, which is
    after this file, so an equal-specificity selector would lose on order. */
 textarea.ce-code__textarea {

@@ -26,7 +26,7 @@ export class PostService extends BaseService {
    * Every write below, and every read that can see drafts, goes through this.
    *
    * Server Actions are public HTTP endpoints: the request posts to whatever
-   * route the caller is on, so `middleware.ts` — which authorises by pathname —
+   * route the caller is on, so `middleware.ts` - which authorises by pathname -
    * is not a boundary for them. An action invoked from a public page reaches
    * this service with no session. Authorisation therefore lives here, next to
    * the data, and the author id comes from the session rather than from an
@@ -89,7 +89,7 @@ export class PostService extends BaseService {
   // ---------- Authenticated reads (drafts included) ----------
 
   /**
-   * Every post including drafts — the admin list. Requires a session, because
+   * Every post including drafts - the admin list. Requires a session, because
    * unpublished content is not public.
    */
   async getAllPosts(options?: { includeContent?: boolean }) {

@@ -22,7 +22,7 @@ export interface SignedUpload {
  *
  * Uploads go browser → Storage with a one-time token instead of through a
  * Server Action, because action bodies are capped at 1 MB by default (and
- * Vercel functions at ~4.5 MB) — too small for a PDF.
+ * Vercel functions at ~4.5 MB) - too small for a PDF.
  */
 @Injectable()
 export class MediaService extends BaseService {
@@ -31,7 +31,7 @@ export class MediaService extends BaseService {
   }
 
   async createSignedUpload(data: CreateUploadUrlDto): Promise<SignedUpload> {
-    // Server Actions are public endpoints — see `PostService.requireAuthorId`.
+    // Server Actions are public endpoints - see `PostService.requireAuthorId`.
     const user = await this.authService.getCurrentUser();
     if (!user) this.unauthorized();
 

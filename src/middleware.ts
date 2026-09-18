@@ -22,7 +22,7 @@ export async function middleware(request: NextRequest) {
   //
   // Safe because middleware is no longer load-bearing for authorisation:
   // Server Actions POST to whatever route the caller is on, so pathname checks
-  // never protected them — `PostService`/`TagService` enforce it at the write.
+  // never protected them - `PostService`/`TagService` enforce it at the write.
   // The only thing skipped is the session refresh, and any authenticated call
   // builds its own Supabase client and refreshes there.
   if (isPublicRoute(request.nextUrl.pathname)) {
@@ -66,8 +66,17 @@ export const config = {
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
-     * - Image files (svg, png, jpg, jpeg, gif, webp)
+     * - Files served from `public/` by extension
+     *
+     * The extension list must cover `.txt` and `.xml`. Middleware redirects any
+     * unmatched path to /login for anonymous visitors, and crawlers are always
+     * anonymous - so while these were matched, /robots.txt and /sitemap.xml
+     * answered a crawler with a 307 to the login page's HTML. Lighthouse read
+     * that HTML as robots syntax and reported one error per line.
+     *
+     * Excluding them costs nothing: middleware is not the authorisation
+     * boundary (see the note above), so a path bypassing it grants no access.
      */
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    '/((?!_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|txt|xml|webmanifest)$).*)',
   ],
 };

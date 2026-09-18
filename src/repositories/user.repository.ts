@@ -5,13 +5,13 @@ import { toUser, type UserRow } from '@models/user.model';
 
 /**
  * User Repository
- * Reads Supabase Auth's `auth.users` table, which is where users live — there
+ * Reads Supabase Auth's `auth.users` table, which is where users live - there
  * is no user table in our own schema.
  *
  * Raw SQL rather than a Prisma model on purpose: declaring the `auth` schema in
  * `schema.prisma` would put Supabase-owned tables under Migrate, and every
  * `migrate diff` against the live database would propose dropping the ones we
- * don't model. Read-only — Supabase Auth remains the only writer.
+ * don't model. Read-only - Supabase Auth remains the only writer.
  */
 @Injectable()
 export class UserRepository extends BaseRepository {

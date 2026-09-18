@@ -13,7 +13,7 @@ import { bootstrapContainer } from './registry';
  * caller happens to have.
  */
 
-// Bootstrap eagerly on import, and again defensively per resolve — both are
+// Bootstrap eagerly on import, and again defensively per resolve - both are
 // no-ops after the first call.
 const container = bootstrapContainer();
 
@@ -21,7 +21,7 @@ const container = bootstrapContainer();
  * Resolve a registered controller, service or repository.
  *
  * Server-side only: this pulls in Prisma and the whole service graph. Call it
- * from Server Actions, Server Components or route handlers — never from a
+ * from Server Actions, Server Components or route handlers - never from a
  * `'use client'` module (the `server-only` import above will fail the build).
  *
  * @example
@@ -33,7 +33,7 @@ export function resolve<T>(token: new (...args: any[]) => T): T {
   const c = bootstrapContainer();
 
   // tsyringe happily auto-constructs an unregistered class, which would hand
-  // back an instance wired with its own fresh `Db` — a second connection pool,
+  // back an instance wired with its own fresh `Db` - a second connection pool,
   // silently. Fail loudly instead.
   if (!c.isRegistered(token, true)) {
     throw new Error(
@@ -45,7 +45,7 @@ export function resolve<T>(token: new (...args: any[]) => T): T {
 }
 
 /**
- * Escape hatch for wiring that `resolve()` cannot express — registering test
+ * Escape hatch for wiring that `resolve()` cannot express - registering test
  * doubles, or creating a child container for a scoped override.
  *
  * Prefer constructor injection over reaching for this: a class that resolves

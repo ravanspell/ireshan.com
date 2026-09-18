@@ -3,7 +3,7 @@ import { z } from 'zod';
 /**
  * Create Upload URL Schema
  *
- * Describes the file the browser is about to upload — the bytes themselves
+ * Describes the file the browser is about to upload - the bytes themselves
  * never pass through the server. Type and size are checked against
  * `MEDIA_TYPES` in `MediaService`, not here, so the rule has one home.
  */

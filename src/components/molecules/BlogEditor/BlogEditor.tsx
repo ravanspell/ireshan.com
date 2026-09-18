@@ -166,7 +166,7 @@ export default function EditorClient({
                 }
 
                 setSaveError(null);
-                // Both come back normalised by the server — the slug may have
+                // Both come back normalised by the server - the slug may have
                 // been derived, and tag names resolve to whatever spelling the
                 // existing tag rows use.
                 setSlug(result.data.slug);

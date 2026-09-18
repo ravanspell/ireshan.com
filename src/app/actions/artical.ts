@@ -19,7 +19,7 @@ export async function saveArticleAction(input: {
   slug: string;
   content: unknown;
   published?: boolean;
-  /** Names, not ids — missing tags are created as part of the save. */
+  /** Names, not ids - missing tags are created as part of the save. */
   tagNames?: string[];
 }) {
   const postController = resolve(PostController);

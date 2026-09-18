@@ -1,6 +1,6 @@
 /**
  * User Domain Model
- * The public face of a Supabase Auth user — only what a blog reader may see.
+ * The public face of a Supabase Auth user - only what a blog reader may see.
  * Built from `auth.users.raw_user_meta_data`; the email and every other auth
  * column stay behind the repository.
  */

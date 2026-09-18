@@ -12,7 +12,7 @@
 /**
  * The groupings below (`PUBLIC_ROUTES`, `ADMIN_ROUTES`, `BLOG_ROUTES`) are a
  * URL dictionary, organised for readability at call sites. They are **not**
- * the access policy — moving a path between them changes nothing about who
+ * the access policy - moving a path between them changes nothing about who
  * can reach it. `PUBLIC_ROUTE_ACCESS` at the bottom of this file is the only
  * thing that decides that.
  */
@@ -72,8 +72,8 @@ export const ROUTES = {
 /**
  * How a declared path is compared against an incoming pathname.
  *
- * - `exact`  — only that pathname. `/login` does not cover `/login/anything`.
- * - `prefix` — that pathname and everything nested under it. `/blog` covers
+ * - `exact`  - only that pathname. `/login` does not cover `/login/anything`.
+ * - `prefix` - that pathname and everything nested under it. `/blog` covers
  *              `/blog/<slug>`; it still does not cover `/blogsomething`.
  */
 export type RouteMatch = 'exact' | 'prefix';
@@ -86,7 +86,7 @@ export interface RouteAccess {
 /**
  * The access policy: every route reachable without a session, declared once.
  *
- * Deny-by-default — `isPublicRoute` is an allowlist, so a route that nobody
+ * Deny-by-default - `isPublicRoute` is an allowlist, so a route that nobody
  * classifies is auth-gated. New routes therefore fail closed.
  *
  * Note this governs *page* requests only. Server Actions POST to whatever

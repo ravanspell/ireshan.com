@@ -10,7 +10,7 @@ type Uploader = {
 };
 
 type EditorToolOptions = {
-  /** Editor-only — the viewer just renders the URL already in the block. */
+  /** Editor-only - the viewer just renders the URL already in the block. */
   imageUploader?: Uploader;
 };
 
@@ -19,7 +19,7 @@ type EditorToolOptions = {
  *
  * Both must register the same set. Editor.js only ships `paragraph` by
  * default and replaces any unregistered block type with a stub reading "The
- * block can not be displayed correctly" — a quiet degrade, not an error — so
+ * block can not be displayed correctly" - a quiet degrade, not an error - so
  * a viewer with fewer tools than the editor stubs its own content.
  *
  * Every tool here supports `readOnly: true`, which Editor.js requires of all
@@ -27,7 +27,7 @@ type EditorToolOptions = {
  *
  * Imported dynamically to keep ~135 KB of tools out of the initial bundle on
  * the public `/blog/[slug]` route, behind the same lazy load as Editor.js
- * itself. (Not for SSR safety — they guard their `document` access.)
+ * itself. (Not for SSR safety - they guard their `document` access.)
  */
 export async function loadEditorTools({
   imageUploader,

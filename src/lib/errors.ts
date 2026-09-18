@@ -2,7 +2,7 @@
  * Domain errors.
  *
  * Lives in `lib/` rather than the service layer so controllers can map a
- * failure to its meaning without importing downward into services — and so
+ * failure to its meaning without importing downward into services - and so
  * nothing has to match on `Error.message` strings to tell a missing row from a
  * duplicate one.
  */

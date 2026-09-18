@@ -59,7 +59,7 @@
   );
   --secondary-foreground: var(--foreground);
 
-  /* ── Brand — oklch(.9 .132 91) === hsl(45,100%,72%) === our gold ─ */
+  /* ── Brand - oklch(.9 .132 91) === hsl(45,100%,72%) === our gold ─ */
   --primary: oklch(0.9 0.132 var(--primary-hue));
   --primary-foreground: oklch(
     min(var(--surface), var(--foreground-lightness)) calc(var(--chroma) * 0.45) var(--primary-hue)

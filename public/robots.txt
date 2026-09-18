@@ -1,4 +1,7 @@
 User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /login
+Disallow: /error
 
-Sitemap: https://ireshanpathirana.com/sitemap.xml
+Sitemap: https://ireshan.com/sitemap.xml

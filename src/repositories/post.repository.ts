@@ -11,7 +11,7 @@ import { CreatePostDto, EditorContent, UpdatePostDto } from '@dtos/post.dto';
  */
 /**
  * Prisma's `InputJsonValue` demands an index signature, which a precise
- * validated object type doesn't have — even though the value is plain JSON.
+ * validated object type doesn't have - even though the value is plain JSON.
  * Narrowing happens here, at the Prisma boundary, and nowhere else.
  */
 function asJson(content: EditorContent): Prisma.InputJsonObject {
@@ -19,7 +19,7 @@ function asJson(content: EditorContent): Prisma.InputJsonObject {
 }
 
 /**
- * Posts arrive here with their tags already resolved to ids — the join table
+ * Posts arrive here with their tags already resolved to ids - the join table
  * stores ids, and turning the editor's tag names into rows is the service's
  * job (`PostService.resolveTagIds`), not a second write buried in here.
  */
@@ -94,7 +94,7 @@ export class PostRepository extends BaseRepository {
   /**
    * Find post by slug.
    *
-   * `publishedOnly` is what the public blog route passes — filtering in the
+   * `publishedOnly` is what the public blog route passes - filtering in the
    * query rather than after the fetch means a draft never leaves the database.
    */
   async findBySlug(slug: string, options?: { publishedOnly?: boolean }) {

@@ -1,4 +1,4 @@
-/* Raw tuning values for the token engine in _theme.css — the only numbers you
+/* Raw tuning values for the token engine in _theme.css - the only numbers you
    tune. Everything in _theme.css is derived from these, so retheming the whole
    site is a matter of changing --hue. */
 :root {

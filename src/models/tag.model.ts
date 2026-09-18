@@ -4,7 +4,7 @@ import type { Tag as TagRow } from '@generated/prisma/client';
  * Tag Domain Model
  * Represents a tag entity for categorizing blog posts.
  *
- * Plain data rather than a class — see the note on `Post`.
+ * Plain data rather than a class - see the note on `Post`.
  */
 export interface Tag {
   id: string;
