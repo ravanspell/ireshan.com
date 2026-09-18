@@ -103,7 +103,7 @@ export default function EditorClient({
             tools: await loadEditorTools({
                 imageUploader: {
                     async uploadByFile(file: Blob) {
-                        const { url } = await reportUploadErrors(uploadMedia(file));
+                        const url = await reportUploadErrors(uploadMedia(file));
                         return { success: 1, file: { url } };
                     },
                 }

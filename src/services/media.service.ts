@@ -4,7 +4,7 @@ import { BaseService } from "./base.service";
 import { AuthService } from "./auth.service";
 import { createClient } from "@/utils/supabase/server";
 import { CreateUploadUrlDto } from "@dtos/media.dto";
-import { MEDIA_BUCKET, MEDIA_TYPES, formatBytes, isMediaContentType } from "@lib/constants/media";
+import { MEDIA_BUCKET, checkMedia } from "@lib/constants/media";
 
 /** What the browser needs to upload straight to Supabase Storage. */
 export interface SignedUpload {
@@ -15,14 +15,14 @@ export interface SignedUpload {
 
 /**
  * Media Service
- * Issues signed upload URLs for post images and attachments.
+ * Issues signed upload URLs for post images.
  *
  * No repository: like `AuthService`, it talks to Supabase (Storage) directly
  * rather than to Prisma.
  *
  * Uploads go browser → Storage with a one-time token instead of through a
  * Server Action, because action bodies are capped at 1 MB by default (and
- * Vercel functions at ~4.5 MB) - too small for a PDF.
+ * Vercel functions at ~4.5 MB) - smaller than the image cap in `checkMedia`.
  */
 @Injectable()
 export class MediaService extends BaseService {
@@ -35,21 +35,16 @@ export class MediaService extends BaseService {
     const user = await this.authService.getCurrentUser();
     if (!user) this.unauthorized();
 
-    if (!isMediaContentType(data.contentType)) {
-      this.badRequest(`Unsupported file type: ${data.contentType}`);
-    }
-
-    const { ext, maxBytes } = MEDIA_TYPES[data.contentType];
-    if (data.size > maxBytes) {
-      this.badRequest(`File is too large (max ${formatBytes(maxBytes)})`);
-    }
+    // The enforcing copy of the rule the browser also ran before uploading.
+    const check = checkMedia(data.contentType, data.size);
+    if (!check.ok) this.badRequest(check.error);
 
     // The server names the object, never the client: a random key can't
     // collide with or overwrite an existing file, and the extension comes from
     // the validated type rather than a user-supplied filename.
     const now = new Date();
     const month = String(now.getUTCMonth() + 1).padStart(2, "0");
-    const path = `posts/${now.getUTCFullYear()}/${month}/${randomUUID()}.${ext}`;
+    const path = `posts/${now.getUTCFullYear()}/${month}/${randomUUID()}.${check.ext}`;
 
     const supabase = await createClient();
     const bucket = supabase.storage.from(MEDIA_BUCKET);

@@ -17,8 +17,6 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
-      {/* `next` is bound server-side so LoginForm stays a presentational
-          component that only knows how to call a submit handler. */}
       <LoginForm onSubmit={loginAction.bind(null, next)} />
     </div>
   );

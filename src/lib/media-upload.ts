@@ -1,33 +1,24 @@
 import { createUploadUrlAction } from '@/app/actions/media';
 import { createClient } from '@/utils/supabase/client';
-import {
-  MEDIA_BUCKET,
-  MEDIA_TYPES,
-  formatBytes,
-  isMediaContentType
-} from '@lib/constants/media';
+import { MEDIA_BUCKET, checkMedia } from '@lib/constants/media';
 
 /** Longest edge a blog image is stored at - wider than the post column at 2x. */
 const MAX_IMAGE_EDGE = 1600;
 const WEBP_QUALITY = 0.82;
 
-export interface UploadedMedia {
-  url: string;
-  /** Bytes actually stored, which for an image may be less than the original. */
-  size: number;
-  contentType: string;
-}
+/** Formats a canvas can re-encode losslessly enough to be worth replacing. */
+const COMPRESSIBLE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 
 /**
  * Re-encodes a raster image as WebP, capped at `MAX_IMAGE_EDGE`.
  *
  * Storage and egress are the free-tier limits that matter, and a phone photo
- * is often 3–5 MB for something displayed ~800px wide. Returns the original
- * when re-encoding wouldn't make it smaller, and never touches GIFs (it would
- * drop the animation).
+ * is often 3-5 MB for something displayed ~800px wide. Returns the original
+ * whenever re-encoding wouldn't make it smaller or can't be trusted, and never
+ * touches GIFs (it would drop the animation).
  */
-async function compressImage(file: File): Promise<File> {
-  if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) return file;
+async function compressImage(file: Blob): Promise<Blob> {
+  if (!COMPRESSIBLE_TYPES.includes(file.type)) return file;
 
   let bitmap: ImageBitmap;
   try {
@@ -40,8 +31,15 @@ async function compressImage(file: File): Promise<File> {
   const canvas = document.createElement('canvas');
   canvas.width = Math.round(bitmap.width * scale);
   canvas.height = Math.round(bitmap.height * scale);
-  canvas.getContext('2d')?.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+
+  const context = canvas.getContext('2d');
+  context?.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
   bitmap.close();
+
+  // No 2D context (memory pressure, or a canvas past the browser's area limit)
+  // leaves the canvas blank, and a blank WebP compresses small enough to pass
+  // the size check below - so it would silently replace the image.
+  if (!context) return file;
 
   const blob = await new Promise<Blob | null>((resolve) =>
     canvas.toBlob(resolve, 'image/webp', WEBP_QUALITY),
@@ -50,30 +48,25 @@ async function compressImage(file: File): Promise<File> {
   // Safari without WebP encoding hands back PNG; only keep a real, smaller WebP.
   if (!blob || blob.type !== 'image/webp' || blob.size >= file.size) return file;
 
-  return new File([blob], file.name.replace(/\.[^.]+$/, '') + '.webp', { type: 'image/webp' });
+  return blob;
 }
 
 /**
- * Uploads one file to the public media bucket and returns its URL.
+ * Uploads one file to the public media bucket and returns its public URL.
  *
- * The server only signs the upload (checking the session, type and size); the
- * bytes go straight from the browser to Supabase Storage. Throws an `Error`
- * with a user-facing message on any failure.
+ * The server only signs the upload (checking the session, type and size) and
+ * names the object; the bytes go straight from the browser to Supabase
+ * Storage. Throws an `Error` with a user-facing message on any failure.
  */
-export async function uploadMedia(input: Blob): Promise<UploadedMedia> {
-  const original = input instanceof File ? input : new File([input], 'upload', { type: input.type });
-  const file = await compressImage(original);
+export async function uploadMedia(file: Blob): Promise<string> {
+  const body = await compressImage(file);
 
-  // Mirrors the server check so an oversized file fails before any round-trip.
-  if (!isMediaContentType(file.type)) {
-    throw new Error(`Unsupported file type${file.type ? `: ${file.type}` : ''}`);
-  }
-  const { maxBytes } = MEDIA_TYPES[file.type];
-  if (file.size > maxBytes) {
-    throw new Error(`File is too large (max ${formatBytes(maxBytes)})`);
-  }
+  // Mirrors the server check so a bad file fails before any round-trip. The
+  // filename is never sent - the server derives the object key and extension.
+  const check = checkMedia(body.type, body.size);
+  if (!check.ok) throw new Error(check.error);
 
-  const signed = await createUploadUrlAction({ contentType: file.type, size: file.size });
+  const signed = await createUploadUrlAction({ contentType: body.type, size: body.size });
   if (!signed.success) {
     throw new Error(
       signed.error || Object.values(signed.errors ?? {}).join(', ') || 'Upload failed',
@@ -82,9 +75,9 @@ export async function uploadMedia(input: Blob): Promise<UploadedMedia> {
 
   const { error } = await createClient()
     .storage.from(MEDIA_BUCKET)
-    .uploadToSignedUrl(signed.data.path, signed.data.token, file, { contentType: file.type });
+    .uploadToSignedUrl(signed.data.path, signed.data.token, body, { contentType: body.type });
 
   if (error) throw new Error(`Upload failed: ${error.message}`);
 
-  return { url: signed.data.publicUrl, size: file.size, contentType: file.type };
+  return signed.data.publicUrl;
 }

@@ -1,15 +1,11 @@
-// `reflect-metadata` must be evaluated before any decorated class module is,
-// because `emitDecoratorMetadata` compiles `@injectable()` classes into
-// `Reflect.metadata(...)` calls that run at class-definition time. Keeping this
-// as the very first import means the polyfill is installed before the imports
-// below pull in any controller, service or repository.
+// Must precede every import below: `emitDecoratorMetadata` compiles decorated
+// classes into `Reflect.metadata(...)` calls that run at class-definition time.
 import 'reflect-metadata';
-// Fails the build if this module ever ends up in a Client Component graph.
 import 'server-only';
 
 import { container, type DependencyContainer } from 'tsyringe';
 
-import { getScope } from './injectable';
+import { getScope, type Constructor } from './injectable';
 
 import { Db, db } from '@lib/db';
 
@@ -28,28 +24,14 @@ import { PostController } from '@controllers/post.controller';
 import { TagController } from '@controllers/tag.controller';
 
 /**
- * Composition root.
- *
- * Every injectable class in the app is registered here explicitly. Nothing is
- * left to tsyringe's auto-registration fallback, which silently constructs an
- * unregistered class on demand - for `Db` that fallback would mean a second
- * `PrismaClient` (and a second connection pool) instead of the shared one.
- */
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type Constructor<T> = new (...args: any[]) => T;
-
-/**
  * Every class the container can hand out.
  *
- * Listing them here rather than letting the decorator self-register keeps
- * registration independent of import order - a provider is registered because
- * the composition root was evaluated, not because something happened to import
- * the provider's module first.
+ * Listing providers explicitly keeps registration independent of import order,
+ * and keeps tsyringe's auto-registration fallback out of play - that fallback
+ * constructs unregistered classes on demand, which for a repository would mean
+ * building it with its own fresh `Db`, i.e. a second connection pool.
  *
- * Lifetimes are NOT decided here: each class declares its own with
- * `@Injectable({ scope })`, and `bootstrapContainer()` reads it back. See
- * `injectable.ts` for what the scopes mean.
+ * Lifetimes are not set here: each class declares its own via `@Injectable`.
  */
 const PROVIDERS: Constructor<unknown>[] = [
   // Repositories
@@ -71,39 +53,46 @@ const PROVIDERS: Constructor<unknown>[] = [
 let bootstrapped = false;
 
 /**
- * Registers every dependency exactly once per module instance.
+ * Composition root: registers `Db` and every provider, once.
  *
- * Next.js can evaluate this module more than once (RSC, SSR and route-handler
- * graphs are separate, and dev HMR re-evaluates on edit), so this is written to
- * be idempotent. The `Db` instance it registers is itself process-global - see
- * `globalForPrisma` in `@lib/db` - so duplicate module instances still share
- * one `PrismaClient`.
+ * Next evaluates this module more than once (RSC, SSR and route-handler graphs
+ * are separate, and HMR re-evaluates on edit), so idempotency is enforced twice
+ * over: the `bootstrapped` latch short-circuits repeat calls into this module
+ * instance, and the per-token `isRegistered` check covers what the latch cannot
+ * see - two module copies, each with its own latch, sharing one container.
+ *
+ * @returns The bootstrapped tsyringe container.
+ * @throws If a listed provider is missing its `@Injectable()` decorator.
  */
 export function bootstrapContainer(): DependencyContainer {
   if (bootstrapped) return container;
-  bootstrapped = true;
 
-  container.registerInstance(Db, db);
+  // Registered by instance, never by class: the container must hand out the
+  // process-wide client from `@lib/db` rather than construct its own.
+  if (!container.isRegistered(Db)) {
+    container.registerInstance(Db, db);
+  }
 
   for (const token of PROVIDERS) {
     const scope = getScope(token);
 
     if (scope === undefined) {
-      // Almost always a class that still uses tsyringe's bare `injectable()`,
-      // which would silently register as transient and ignore any lifetime the
-      // author thought they were declaring.
+      // Usually a class still importing tsyringe's bare `injectable()`, which
+      // registers as transient and ignores the lifetime its author declared.
       throw new Error(
         `[di] ${token.name} is listed as a provider but is not decorated with @Injectable(). ` +
-          `Import it from "@lib/di/injectable" instead of "tsyringe".`,
+        `Import it from "@lib/di/injectable" instead of "tsyringe".`,
       );
     }
 
-    // Next can end up with two copies of this module sharing one tsyringe
-    // container; re-registering would stack a duplicate entry per token.
     if (container.isRegistered(token)) continue;
 
     container.register(token, { useClass: token }, { lifecycle: scope });
   }
+
+  // Latched only after registration succeeds, so a throw above cannot leave the
+  // latch closed over a half-registered container.
+  bootstrapped = true;
 
   return container;
 }

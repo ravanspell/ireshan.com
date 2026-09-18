@@ -1,15 +1,9 @@
 /**
- * Prisma client wired for Next.js: a decorated `Db` class the DI container can
- * inject, plus the process-wide instance `registry.ts` actually registers.
- *
- * `reflect-metadata` is imported first because `Db` is decorated and this module
- * is imported by repositories that may load before the container bootstraps -
- * the polyfill has to be installed before the class body runs.
+ * Prisma client wired for Next.js: the `Db` class repositories inject, plus the
+ * process-wide instance `registry.ts` registers under it as a DI token.
  */
-import "reflect-metadata";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "@generated/prisma/client";
-import { Injectable, Scope } from "@lib/di/injectable";
 
 /**
  * Resolves the runtime connection string.
@@ -27,20 +21,20 @@ function connectionString(): string {
   if (!url) {
     throw new Error(
       "DATABASE_URL is not set. Prisma 7 takes the runtime connection from the " +
-        "driver adapter in src/lib/db.ts, not from prisma/schema.prisma.",
+      "driver adapter in src/lib/db.ts, not from prisma/schema.prisma.",
     );
   }
   return url;
 }
 
 /**
- * Prisma client bound to the pooled connection, injectable as a DI token.
+ * Prisma client bound to the pooled connection, and the DI token repositories
+ * inject.
  *
- * The singleton scope is declarative only - the container never constructs this
- * class. `registry.ts` registers the {@link db} instance below, which is cached
- * on `globalThis` so one connection pool is shared by every module graph.
+ * Deliberately undecorated: the container never constructs this class. It only
+ * registers the {@link db} instance below against it, so a `@Injectable` scope
+ * here would be read by nothing.
  */
-@Injectable({ scope: Scope.Singleton })
 export class Db extends PrismaClient {
   constructor() {
     super({

@@ -2,11 +2,11 @@ import type { EditorConfig, ToolConstructable } from '@editorjs/editorjs';
 
 import { IMAGE_CONTENT_TYPES } from '@lib/constants/media';
 
-type UploadResponse = { success: number; file: { url: string } & Record<string, unknown> };
+/** What the Editor.js image tool expects back from a custom uploader. */
+type UploadResponse = { success: number; file: { url: string } };
 
 type Uploader = {
-  uploadByFile?: (file: Blob) => Promise<UploadResponse>;
-  uploadByUrl?: (url: string) => Promise<UploadResponse>;
+  uploadByFile: (file: Blob) => Promise<UploadResponse>;
 };
 
 type EditorToolOptions = {
