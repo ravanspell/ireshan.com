@@ -62,6 +62,194 @@ textarea.ce-code__textarea {
   font-size: 0.8125rem;
 }
 
+/* 3a. Editor only: the highlighted copy sits in `.ce-code__highlight` with the
+   textarea laid over it, transparent apart from its caret, so the colour shows
+   through while the textarea stays the real input. */
+.ce-code__editor {
+  position: relative;
+  background: var(--field);
+  border-radius: 0.375rem;
+}
+
+.ce-code__editor > textarea.ce-code__textarea {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  background: transparent;
+  color: transparent;
+  caret-color: var(--foreground);
+}
+
+/* Translucent, or it would paint over the only visible copy of the text. */
+.ce-code__editor > textarea.ce-code__textarea::selection {
+  background: oklch(from var(--primary) l c h / 30%);
+  color: transparent;
+}
+
+.ce-code__highlight {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  margin: 0;
+  overflow: hidden;
+  pointer-events: none;
+  /* Transparent, not none - matches the inset the textarea's border creates. */
+  border: 1px solid transparent;
+  border-radius: 0.375rem;
+}
+
+.ce-code__highlight code {
+  display: block;
+  font: inherit;
+  color: var(--foreground);
+}
+
+/* Both layers must agree on every metric here - a fractional difference
+   compounds down the block until the colours sit under the wrong characters. */
+.ce-code__editor > textarea.ce-code__textarea,
+.ce-code__highlight {
+  padding: 0.75rem 1rem;
+  font-family: Menlo, Monaco, Consolas, 'Courier New', monospace;
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  letter-spacing: normal;
+  tab-size: 2;
+  white-space: pre;
+  word-wrap: normal;
+}
+
+/* 3b. Editor only: the language dropdown. Sits under the block rather than
+   over it - Editor.js already owns the top-right with its settings button. */
+.ce-code__lang {
+  margin-top: 0.5rem;
+  background: var(--field);
+  color: var(--muted-foreground);
+  border: 1px solid var(--input);
+  border-radius: 0.375rem;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.ce-code__lang:focus-visible {
+  outline: none;
+  border-color: var(--ring);
+  box-shadow: 0 0 0 2px var(--ring);
+}
+
+/* The OS draws the open list and ignores the control's own colours. */
+.ce-code__lang option {
+  background: var(--popover);
+  color: var(--popover-foreground);
+}
+
+/* 3c. Read-only only: the <pre><code> that replaces the textarea. Scrolls
+   rather than wraps, so indentation survives, and grows to fit on its own -
+   which is why CMSViewer no longer measures code blocks by hand. */
+.ce-code__preview {
+  position: relative;
+  margin: 0;
+  background: var(--field);
+  border: 1px solid var(--input);
+  border-radius: 0.375rem;
+  padding: 0.75rem 1rem;
+  overflow-x: auto;
+  tab-size: 2;
+}
+
+.ce-code__preview code {
+  display: block;
+  font-family: Menlo, Monaco, Consolas, 'Courier New', monospace;
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  color: var(--foreground);
+  white-space: pre;
+}
+
+/* Badge from `pre.dataset.language`, which the tool sets only for an
+   author-chosen language - never a guess, so it can't mislabel. */
+.ce-code__preview[data-language]::before {
+  content: attr(data-language);
+  position: absolute;
+  top: 0.5rem;
+  right: 0.75rem;
+  font-size: 0.6875rem;
+  letter-spacing: 0.02em;
+  color: var(--muted-foreground);
+  pointer-events: none;
+}
+
+/* 3d. highlight.js tokens, derived here rather than imported from one of the
+   package's own themes - a stylesheet of raw hex would not follow `--hue`.
+   Hues are offsets from the brand; lightness stays near
+   --foreground-lightness so no token falls below body text in contrast.
+   Class names are highlight.js's documented stable set:
+   https://highlightjs.readthedocs.io/en/latest/css-classes-reference.html */
+.codex-editor .hljs {
+  --code-keyword: oklch(0.78 0.11 calc(var(--primary-hue) + 205)); /* violet */
+  --code-string: oklch(0.83 0.1 calc(var(--primary-hue) + 60)); /* green */
+  --code-literal: oklch(0.82 0.11 calc(var(--primary-hue) + 260)); /* blue */
+  --code-title: oklch(0.88 0.1 var(--primary-hue)); /* brand gold */
+  --code-comment: var(--tertiary-foreground);
+}
+
+.codex-editor .hljs-comment,
+.codex-editor .hljs-quote {
+  color: var(--code-comment);
+  font-style: italic;
+}
+
+.codex-editor .hljs-keyword,
+.codex-editor .hljs-selector-tag,
+.codex-editor .hljs-literal,
+.codex-editor .hljs-doctag,
+.codex-editor .hljs-name,
+.codex-editor .hljs-meta,
+.codex-editor .hljs-subst {
+  color: var(--code-keyword);
+}
+
+.codex-editor .hljs-string,
+.codex-editor .hljs-regexp,
+.codex-editor .hljs-addition,
+.codex-editor .hljs-attribute,
+.codex-editor .hljs-meta .hljs-string {
+  color: var(--code-string);
+}
+
+.codex-editor .hljs-number,
+.codex-editor .hljs-symbol,
+.codex-editor .hljs-bullet,
+.codex-editor .hljs-link,
+.codex-editor .hljs-variable,
+.codex-editor .hljs-template-variable,
+.codex-editor .hljs-type,
+.codex-editor .hljs-built_in,
+.codex-editor .hljs-builtin-name {
+  color: var(--code-literal);
+}
+
+.codex-editor .hljs-title,
+.codex-editor .hljs-section,
+.codex-editor .hljs-selector-id,
+.codex-editor .hljs-selector-class,
+.codex-editor .hljs-attr {
+  color: var(--code-title);
+}
+
+.codex-editor .hljs-deletion {
+  color: var(--destructive);
+}
+
+.codex-editor .hljs-emphasis {
+  font-style: italic;
+}
+
+.codex-editor .hljs-strong {
+  font-weight: 600;
+}
+
 /* 4. Editor chrome on the dark theme. Editor.js and its tools ship a light
    palette - white popovers, black text, #1d202b toolbar icons, a pale-blue
    block selection - and inject it into <head> after this file. Its colours

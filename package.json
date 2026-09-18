@@ -34,6 +34,7 @@
     "@supabase/supabase-js": "^2.58.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "highlight.js": "^11.12.0",
     "lucide-react": "^0.552.0",
     "next": "15.5.25",
     "nextjs-toploader": "^3.9.17",

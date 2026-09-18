@@ -8,18 +8,6 @@ interface CMSViewerProps {
   data: any;
 }
 
-/**
- * `@editorjs/code` renders into a fixed `min-height: 200px` textarea with no
- * resize logic of its own - in the editor the author drags it taller by hand.
- * A reader can't, so anything longer sits clipped behind an inner scrollbar.
- */
-function growCodeBlocks(holder: HTMLElement) {
-  holder.querySelectorAll('textarea.ce-code__textarea').forEach((node) => {
-    const textarea = node as HTMLTextAreaElement;
-    textarea.style.height = `${textarea.scrollHeight}px`;
-  });
-}
-
 export default function CMSViewer({ data }: CMSViewerProps) {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -36,16 +24,13 @@ export default function CMSViewer({ data }: CMSViewerProps) {
       ([{ default: EditorJS }, tools]) => {
         if (cancelled || !ref.current) return;
 
-        const holder = ref.current;
-
         editor = new EditorJS({
-          holder,
+          holder: ref.current,
           readOnly: true,
           // Must cover every type the editor can save, or those blocks render
           // as Editor.js's "can not be displayed correctly" stub.
           tools,
           data,
-          onReady: () => growCodeBlocks(holder),
         });
       },
     );

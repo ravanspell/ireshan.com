@@ -35,7 +35,7 @@ export async function loadEditorTools({
   const [Header, Paragraph, CodeTool, List, ImageTool] = await Promise.all([
     import('@editorjs/header').then((m) => m.default),
     import('@editorjs/paragraph').then((m) => m.default),
-    import('@editorjs/code').then((m) => m.default),
+    import('@lib/editor-code-tool').then((m) => m.default),
     import('@editorjs/list').then((m) => m.default),
     import('@editorjs/image').then((m) => m.default),
   ]);
