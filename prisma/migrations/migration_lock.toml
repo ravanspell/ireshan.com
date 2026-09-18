@@ -1,0 +1,4 @@
+# Stamps the database engine this migrations directory was generated for.
+# Every migration.sql here is Postgres-specific DDL, so Prisma checks this
+# against datasource.provider in schema.prisma and aborts if they disagree.
+provider = "postgresql"

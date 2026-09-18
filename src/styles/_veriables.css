@@ -1,0 +1,37 @@
+/* Raw tuning values for the token engine in _theme.css - the only numbers you
+   tune. Everything in _theme.css is derived from these, so retheming the whole
+   site is a matter of changing --hue. */
+:root {
+  /* ── Seeds ────────────────────────────────────────────────────── */
+  --hue: 91; /* brand: our gold. Supabase ships 159 (green) */
+  /* Greys keep Supabase's own hue. Tying this to --hue tints every surface and
+     text grey gold (a warm brown cast); the swap is for the accent only. */
+  --surface-hue: 159;
+  --primary-hue: var(--hue);
+  --chroma: 0.005; /* how much hue bleeds into the greys */
+  --surface: 0.19; /* background lightness */
+  --foreground-lightness: 0.95;
+  --contrast: 0.5;
+  --elevation-step: 0.025;
+  --muted-foreground-level: 0.8;
+  --tertiary-foreground-level: 0.65;
+  --field-alpha: 0.12;
+
+  /* ── Contrast floors ──────────────────────────────────────────── */
+  --contrast-text-floor: 0.9;
+  --contrast-border-floor: 0.05;
+
+  /* ── Elevation levels (multiples of --elevation-step) ─────────── */
+  --elevation-1: 1;
+  --elevation-2: 1.5;
+  --elevation-3: 2;
+  --elevation-4: 3;
+
+  /* ── Status colours ───────────────────────────────────────────── */
+  --brand-hue-reference: 159;
+  --status-hue-pull: 0.15;
+  --expressive-chroma: 0.14;
+  --warning-lightness: 0.8;
+  --destructive-lightness: 0.75;
+  --info-lightness: 0.7;
+}

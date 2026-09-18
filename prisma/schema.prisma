@@ -1,0 +1,59 @@
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// Post model - Represents blog posts
+model Post {
+  id    String @id @default(uuid())
+  title String
+  slug  String @unique
+
+  /// Editor.js OutputData. Stored as jsonb rather than a stringified blob so
+  /// the block structure stays queryable and isn't double-encoded on every read.
+  content Json
+
+  /// Plain-text preview derived from the first paragraph block on save, so the
+  /// blog index can render cards without loading every post's full content.
+  excerpt String? @db.VarChar(300)
+
+  published   Boolean   @default(false)
+  publishedAt DateTime? @map("published_at")
+
+  authorId  String   @map("author_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  tags PostTag[]
+
+  // The blog index filters on `published` and orders by `publishedAt`.
+  @@index([published, publishedAt])
+  @@map("posts")
+}
+
+// Tag model - Represents blog post tags
+model Tag {
+  id        String    @id @default(uuid())
+  name      String    @unique
+  slug      String    @unique
+  createdAt DateTime  @default(now()) @map("created_at")
+  posts     PostTag[]
+
+  @@map("tags")
+}
+
+// PostTag junction table - Many-to-many relationship
+model PostTag {
+  postId String @map("post_id")
+  tagId  String @map("tag_id")
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  tag    Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([postId, tagId])
+  @@map("post_tags")
+}

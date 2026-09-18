@@ -5,6 +5,8 @@
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
@@ -20,11 +22,18 @@
     ],
     "paths": {
       "@/*": ["./src/*"],
+      "@generated/*": ["./src/generated/*"],
       "@styles/*": ["./src/styles/*"],
-      "@atoms/*": ["./src/app/atoms/*"],
-      "@molecules/*": ["./src/app/molecules/*"],
-      "@organisms/*": ["./src/app/organisms/*"],
-      "@templates/*": ["./src/app/templates/*"]
+      "@atoms/*": ["./src/components/atoms/*"],
+      "@molecules/*": ["./src/components/molecules/*"],
+      "@organisms/*": ["./src/components/organisms/*"],
+      "@templates/*": ["./src/components/templates/*"],
+      "@lib/*": ["./src/lib/*"],
+      "@models/*": ["./src/models/*"],
+      "@repositories/*": ["./src/repositories/*"],
+      "@services/*": ["./src/services/*"],
+      "@controllers/*": ["./src/controllers/*"],
+      "@dtos/*": ["./src/dtos/*"]
     }
   },
   "include": [

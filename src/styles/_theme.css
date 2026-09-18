@@ -1,0 +1,119 @@
+/* Dark-only theme. Token engine reverse-engineered from supabase.com,
+   re-seeded with our gold in place of their green.
+
+   Every token here is derived from the raw values in _veriables.css. Status
+   hues rotate along with the brand hue, which keeps warning/destructive/info
+   harmonious with whatever --hue is set. */
+:root {
+  color-scheme: dark;
+
+  /* ── Contrast curve ───────────────────────────────────────────── */
+  --contrast-delta: calc((var(--contrast) - 0.5) / 0.5);
+  --contrast-up: max(0, var(--contrast-delta));
+  --contrast-down: max(0, calc(var(--contrast-delta) * -1));
+  --contrast-text: calc(1 - (1 - var(--contrast-text-floor)) * var(--contrast-down));
+  --contrast-border-linear: calc(
+    var(--contrast-border-floor) + (1 - var(--contrast-border-floor)) * var(--contrast)
+  );
+  --contrast-border: calc(var(--contrast-border-linear) * var(--contrast-border-linear));
+
+  /* ── Elevation ────────────────────────────────────────────────── */
+  --tone-span: calc(var(--foreground-lightness) - var(--surface));
+  --surface-overlay-unit: calc(
+    var(--elevation-step) / max(var(--tone-span), calc(var(--tone-span) * -1))
+  );
+  --muted-alpha: calc(var(--surface-overlay-unit) * var(--elevation-1));
+  --accent-alpha: calc(var(--surface-overlay-unit) * var(--elevation-2));
+  --tertiary-alpha: calc(var(--surface-overlay-unit) * var(--elevation-3));
+
+  /* ── Status hues rotate with the brand hue ────────────────────── */
+  --warning-hue: clamp(
+    65,
+    calc(75 + (var(--primary-hue) - var(--brand-hue-reference)) * var(--status-hue-pull)),
+    95
+  );
+  --destructive-hue: clamp(
+    12,
+    calc(25 + (var(--primary-hue) - var(--brand-hue-reference)) * var(--status-hue-pull)),
+    42
+  );
+  --info-hue: clamp(
+    272,
+    calc(288 + (var(--primary-hue) - var(--brand-hue-reference)) * var(--status-hue-pull)),
+    302
+  );
+
+  /* ── Surfaces ─────────────────────────────────────────────────── */
+  --background: oklch(var(--surface) calc(var(--chroma) * 0.5) var(--surface-hue));
+  --foreground-chroma: calc(var(--chroma) * 0.55);
+  --foreground: oklch(
+    calc(var(--surface) + var(--tone-span) * var(--contrast-text)) var(--foreground-chroma)
+      var(--surface-hue)
+  );
+  --card: oklch(from var(--background) calc(l + var(--elevation-step) * var(--elevation-1)) c h);
+  --card-foreground: var(--foreground);
+  --popover: oklch(from var(--background) calc(l + var(--elevation-step) * var(--elevation-2)) c h);
+  --popover-foreground: var(--foreground);
+  --secondary: oklch(
+    from var(--background) calc(l + var(--elevation-step) * var(--elevation-3)) c h
+  );
+  --secondary-foreground: var(--foreground);
+
+  /* ── Brand - oklch(.9 .132 91) === hsl(45,100%,72%) === our gold ─ */
+  --primary: oklch(0.9 0.132 var(--primary-hue));
+  --primary-foreground: oklch(
+    min(var(--surface), var(--foreground-lightness)) calc(var(--chroma) * 0.45) var(--primary-hue)
+  );
+
+  /* ── Tints ────────────────────────────────────────────────────── */
+  --muted: oklch(from var(--foreground) l c h / var(--muted-alpha));
+  --muted-foreground-mix: calc(
+    var(--muted-foreground-level) + (1 - var(--muted-foreground-level)) * var(--contrast-up) -
+      var(--muted-foreground-level) * 0.5 * var(--contrast-down)
+  );
+  --muted-foreground: oklch(
+    calc(var(--surface) + var(--tone-span) * var(--muted-foreground-mix)) var(--foreground-chroma)
+      var(--surface-hue)
+  );
+  --accent: oklch(from var(--foreground) l c h / var(--accent-alpha));
+  --accent-foreground: var(--foreground);
+  --tertiary: oklch(from var(--foreground) l c h / var(--tertiary-alpha));
+  --tertiary-foreground-mix: calc(
+    var(--tertiary-foreground-level) + (1 - var(--tertiary-foreground-level)) * var(--contrast-up) -
+      var(--tertiary-foreground-level) * 0.5 * var(--contrast-down)
+  );
+  --tertiary-foreground: oklch(
+    calc(var(--surface) + var(--tone-span) * var(--tertiary-foreground-mix))
+      var(--foreground-chroma) var(--surface-hue)
+  );
+
+  /* ── Status ───────────────────────────────────────────────────── */
+  --destructive: oklch(
+    var(--destructive-lightness) var(--expressive-chroma) var(--destructive-hue)
+  );
+  --warning: oklch(var(--warning-lightness) var(--expressive-chroma) var(--warning-hue));
+  --info: oklch(var(--info-lightness) var(--expressive-chroma) var(--info-hue));
+  --destructive-foreground: oklch(
+    from var(--destructive) clamp(0.12, calc((0.62 - l) * 100), 0.99) calc(c * 0.08) h
+  );
+  --warning-foreground: oklch(
+    from var(--warning) clamp(0.12, calc((0.62 - l) * 100), 0.99) calc(c * 0.08) h
+  );
+  --info-foreground: oklch(
+    from var(--info) clamp(0.12, calc((0.62 - l) * 100), 0.99) calc(c * 0.08) h
+  );
+
+  /* ── Lines ────────────────────────────────────────────────────── */
+  --border: oklch(
+    from var(--foreground) l calc(c * 0.54) h / calc(2% + 20% * var(--contrast-border))
+  );
+  --border-stronger: oklch(
+    from var(--foreground) l calc(c * 0.5) h / calc(5% + 45% * var(--contrast-border))
+  );
+  --border-brand: oklch(from var(--primary) l c h / 30%);
+  --input: oklch(
+    from var(--foreground) l calc(c * 0.5) h / calc(3% + 38% * var(--contrast-border))
+  );
+  --ring: oklch(from var(--primary) l c h / 55%);
+  --field: oklch(0 0 0 / var(--field-alpha));
+}

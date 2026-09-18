@@ -1,0 +1,10 @@
+{
+  // Tailwind v4 directives (@utility, @theme, @custom-variant, @source) are unknown
+  // to VS Code's built-in CSS linter. Open .css files in the Tailwind CSS
+  // IntelliSense language mode, which understands them.
+  "files.associations": {
+    "*.css": "tailwindcss"
+  },
+  // Fallback for anyone without the extension: the plain CSS linter stays quiet.
+  "css.lint.unknownAtRules": "ignore"
+}

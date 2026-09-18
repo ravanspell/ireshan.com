@@ -1,12 +1,9 @@
 import type { NextConfig } from 'next';
+import path from 'path';
 
 const nextConfig: NextConfig = {
-  // static site build only - enable
-  output: 'export',
-  // enable unoptimized for static serve
-  // remove this when enable SSR
-  images: {
-    unoptimized: true,
+  turbopack: {
+    root: path.join(__dirname),
   },
 };
 

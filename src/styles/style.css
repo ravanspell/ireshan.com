@@ -1,0 +1,116 @@
+@import './_veriables.css'; /* raw tuning values for the token engine */
+@import './_theme.css'; /* semantic token engine (dark-only) */
+@import 'tailwindcss';
+@import './_editorjs.css'; /* Editor.js (editor + CMSViewer) */
+
+@layer base {
+  /* Tailwind v4 defaults a bare `border` to currentColor, which on a dark theme
+     paints a near-white hairline. shadcn's components (ui/card, ui/sheet) all use
+     bare `border`, so anchor it to the semantic token. */
+  * {
+    border-color: var(--border);
+  }
+}
+
+body {
+  font-family: var(--font-sans);
+  font-weight: 450; /* Inter @450 - the Supabase signature weight */
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+  letter-spacing: -0.02em;
+}
+
+/* Smooth scroll behavior */
+html {
+  scroll-behavior: smooth;
+}
+
+@utility container {
+  /* Automatically centers the container */
+  margin-inline: auto;
+  /* Sets the maximum width for the container */
+  max-width: 70.5rem; /* 1128px - their --content-width-screen-xl */
+}
+
+@theme inline {
+  /* Semantic surface - consumed by src/components/atoms/* */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-tertiary: var(--tertiary);
+  --color-tertiary-foreground: var(--tertiary-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --color-border: var(--border);
+  --color-border-stronger: var(--border-stronger);
+  --color-border-brand: var(--border-brand);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-field: var(--field);
+
+  /* Sidebar - consumed by src/components/atoms/sidebar. Recessed one step below
+     the page so the inset content panel reads as raised above it. */
+  --color-sidebar: oklch(from var(--background) calc(l - 0.015) c h);
+  --color-sidebar-foreground: var(--foreground);
+  --color-sidebar-primary: var(--primary);
+  --color-sidebar-primary-foreground: var(--primary-foreground);
+  --color-sidebar-accent: var(--accent);
+  --color-sidebar-accent-foreground: var(--accent-foreground);
+  --color-sidebar-border: var(--border);
+  --color-sidebar-ring: var(--ring);
+
+  /* Type scale - one notch tighter than stock Tailwind */
+  --text-xs: 0.75rem;
+  --text-xs--line-height: calc(1 / 0.75);
+  --text-sm: 0.875rem;
+  --text-sm--line-height: calc(1.25 / 0.875);
+  --text-base: 0.9375rem; /* 15px, not 16 */
+  --text-base--line-height: 1.5;
+  --text-lg: 1rem;
+  --text-lg--line-height: calc(1.75 / 1.125);
+  --text-xl: 1.125rem;
+  --text-xl--line-height: calc(1.75 / 1.25);
+  --text-2xl: 1.375rem;
+  --text-2xl--line-height: calc(2 / 1.5);
+  --text-3xl: 1.75rem;
+  --text-3xl--line-height: calc(2.25 / 1.875);
+  --text-4xl: 2.125rem;
+  --text-4xl--line-height: calc(2.5 / 2.25);
+  --text-5xl: 2.875rem;
+  --text-5xl--line-height: 1;
+  --text-6xl: 3.625rem;
+  --text-6xl--line-height: 1;
+  --text-7xl: 4.375rem;
+  --text-7xl--line-height: 1;
+
+  --font-weight-normal: 450;
+
+  --font-sans:
+    var(--font-inter), Inter, 'Helvetica Neue', Helvetica, ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-manrope), var(--font-sans);
+  --font-mono: var(--font-source-code-pro), 'Source Code Pro', ui-monospace, Menlo, monospace;
+}
