@@ -48,6 +48,10 @@ export default function BlogEditorTemplate({
   // Stops deriving from the title once the author edits the slug by hand, so
   // renaming a published post doesn't silently change its URL.
   const [slugTouched, setSlugTouched] = useState(Boolean(initialSlug));
+  // Held in state rather than read on render: pulling the document out of
+  // Editor.js is asynchronous.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [previewData, setPreviewData] = useState<any>(null);
 
   const { save: saveDocument } = useEditorJs({ initialData, onUploadError: setUploadError });
 
@@ -61,6 +65,23 @@ export default function BlogEditorTemplate({
   const onSlugChange = (value: string) => {
     setSlugTouched(true);
     setSlug(slugify(value));
+  };
+
+  /**
+   * Swap between writing and the reader's view, snapshotting the editor on the
+   * way in. Nothing is written to the database - this previews unsaved work.
+   */
+  const togglePreview = async (): Promise<void> => {
+    if (previewData) {
+      setPreviewData(null);
+      return;
+    }
+
+    const outputData = await saveDocument();
+    // Only `undefined` while Editor.js is still loading - nothing to show yet.
+    if (!outputData) return;
+
+    setPreviewData(outputData);
   };
 
   /**
@@ -135,6 +156,9 @@ export default function BlogEditorTemplate({
       status={status}
       saveError={saveError}
       uploadError={uploadError}
+      isPreview={previewData !== null}
+      previewData={previewData}
+      onTogglePreview={togglePreview}
       onPublish={() => save(true)}
       onSaveDraft={() => save(false)}
     />
