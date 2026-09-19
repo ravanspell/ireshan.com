@@ -4,7 +4,7 @@ import { useState, useTransition } from 'react';
 import { saveArticleAction } from '@/app/actions/artical';
 import BlogEditor from '@organisms/BlogEditor/BlogEditor';
 import type { SaveStatus } from '@molecules/EditorToolbar/EditorToolbar';
-import { useEditorJs } from '@/utils/hooks/useEditorJs';
+import { useEditorJs } from '@hooks/useEditorJs';
 import { slugify } from '@lib/slug';
 
 export interface BlogEditorTemplateProps {
@@ -65,7 +65,7 @@ export default function BlogEditorTemplate({
 
   /**
    * Save the content of the blog post
-   * 
+   *
    * @param published publish status true = published / false= draft
    * @returns void
    */
@@ -98,9 +98,7 @@ export default function BlogEditorTemplate({
 
         if (!result?.success) {
           // Field errors come back from Zod, `error` from a domain failure.
-          const message = result?.errors
-            ? Object.values(result.errors).join(', ')
-            : result?.error;
+          const message = result?.errors ? Object.values(result.errors).join(', ') : result?.error;
           console.error('Saving failed:', message);
           setSaveError(message ?? 'Unknown error');
           setStatus('error');

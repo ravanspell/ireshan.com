@@ -3,7 +3,7 @@
 import EditorField from '@molecules/EditorField/EditorField';
 import EditorToolbar, { type SaveStatus } from '@molecules/EditorToolbar/EditorToolbar';
 import TagInput from '@molecules/TagInput/TagInput';
-import { EDITOR_HOLDER_ID } from '@/utils/hooks/useEditorJs';
+import { EDITOR_HOLDER_ID } from '@hooks/useEditorJs';
 
 export interface BlogEditorProps {
   /** "New Post", "Edit Post" or "Edit Draft". */
