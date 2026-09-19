@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter, Manrope, Source_Code_Pro } from 'next/font/google';
+import NextTopLoader from 'nextjs-toploader';
 import '@fortawesome/fontawesome-svg-core/styles.css';
 import '../styles/style.css';
 
@@ -93,6 +94,7 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${manrope.variable} ${sourceCodePro.variable} antialiased`}
       >
+        <NextTopLoader color="var(--primary)" showSpinner={false} />
         {children}
       </body>
     </html>

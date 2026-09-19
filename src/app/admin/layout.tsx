@@ -1,5 +1,4 @@
 import { cookies } from 'next/headers';
-import NextTopLoader from 'nextjs-toploader';
 import AdminSidebar from '@molecules/AdminSidebar/AdminSidebar';
 import AdminSiteHeader from '@molecules/AdminSiteHeader/AdminSiteHeader';
 import type { AdminUser } from '@molecules/AdminNavUser/AdminNavUser';
@@ -29,7 +28,6 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   return (
     <SidebarProvider defaultOpen={defaultOpen}>
-      <NextTopLoader showSpinner={false} />
       <AdminSidebar variant="inset" user={user} />
       <SidebarInset className="md:peer-data-[variant=inset]:border">
         <AdminSiteHeader />
