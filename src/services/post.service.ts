@@ -67,7 +67,7 @@ export class PostService extends BaseService {
    * renders from `excerpt` and so doesn't need the block documents.
    */
   async getPublishedPosts() {
-    return this.postRepository.findAll({ publishedOnly: true, includeContent: false });
+    return this.postRepository.findAll({ published: true, includeContent: false });
   }
 
   /**
@@ -97,8 +97,17 @@ export class PostService extends BaseService {
 
     return this.postRepository.findAll({
       includeContent: options?.includeContent ?? false,
-      orderBy: 'desc',
     });
+  }
+
+  /**
+   * Unpublished posts, last edited first - the admin drafts list. Requires a
+   * session; the cards render from `excerpt`, the editor loads content by id.
+   */
+  async getDraftPosts() {
+    await this.requireAuthorId();
+
+    return this.postRepository.findAll({ published: false, includeContent: false });
   }
 
   /** A post by slug, drafts included. Requires a session. */

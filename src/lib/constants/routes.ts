@@ -41,6 +41,9 @@ export const ADMIN_ROUTES = {
   /** Admin dashboard */
   DASHBOARD: '/admin',
 
+  /** Unpublished posts, waiting to be finished */
+  DRAFTS: '/admin/drafts',
+
   /** Blog editor, opened on a blank draft */
   EDITOR: '/admin/editor',
 

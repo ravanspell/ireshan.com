@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { resolve } from '@/lib/di/container';
 import { PostController } from '@controllers/post.controller';
+import { formatDate } from '@lib/date';
 import CMSViewer from '@molecules/CMSViewer/CMSViewer';
 import Tag from '@/components/atoms/Tag/Tag';
 import ProfileImage from '@/components/molecules/ProfileImage/ProfileImage';
@@ -71,7 +72,7 @@ export default async function PostPage({ params }: PageProps) {
               dateTime={post.publishedAt.toISOString()}
               className="text-muted-foreground block text-sm"
             >
-              {new Intl.DateTimeFormat('en', { dateStyle: 'long' }).format(post.publishedAt)}
+              {formatDate(post.publishedAt)}
             </time>
           )}
         </div>
