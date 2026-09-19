@@ -51,7 +51,7 @@ export default async function PostPage({ params }: PageProps) {
   const post = result.data;
 
   return (
-    <article className="mx-auto max-w-[680] px-4 py-12">
+    <article className="mx-auto max-w-4xl px-4 py-12">
       <h1 className="text-5xl font-bold mb-8 mt-6">{post.title}</h1>
       <div className='flex gap-3 items-center mb-6' >
         <div>
