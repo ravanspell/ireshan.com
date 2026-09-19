@@ -94,7 +94,7 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${manrope.variable} ${sourceCodePro.variable} antialiased`}
       >
-        <NextTopLoader color="var(--primary)" showSpinner={false} />
+        <NextTopLoader color="var(--primary)" showSpinner={false} showForHashAnchor={false} />
         {children}
       </body>
     </html>
