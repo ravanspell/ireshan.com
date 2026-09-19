@@ -14,11 +14,12 @@ import { NEXT_PARAM, safeNextPath } from '@/lib/auth/redirect';
  * @see https://nextjs.org/docs/app/building-your-application/routing/middleware
  */
 export async function middleware(request: NextRequest) {
-  const { supabase, response } = await createClient(request);
-
-  // Public routes skip the Supabase round-trip entirely. This runs on every
-  // request, so calling `getUser()` for anonymous visitors reading the blog is
-  // a network hop per page view for an answer nobody uses.
+  // Public routes skip Supabase entirely - the client is never even built.
+  // This runs on every request, so `getUser()` for anonymous visitors reading
+  // the blog is a network hop per page view for an answer nobody uses. Building
+  // the client alone costs one too: `createServerClient` registers an
+  // auth-state subscriber that replays whatever refresh token the cookies
+  // carry, so a stale cookie logged `Invalid Refresh Token` on every /blog hit.
   //
   // Safe because middleware is no longer load-bearing for authorisation:
   // Server Actions POST to whatever route the caller is on, so pathname checks
@@ -26,10 +27,14 @@ export async function middleware(request: NextRequest) {
   // The only thing skipped is the session refresh, and any authenticated call
   // builds its own Supabase client and refreshes there.
   if (isPublicRoute(request.nextUrl.pathname)) {
-    return response;
+    return NextResponse.next({ request });
   }
 
-  // Refresh session if expired - required for Server Components
+  const { supabase, getResponse } = await createClient(request);
+
+  // Refresh session if expired - required for Server Components. A dead refresh
+  // token is not thrown: Supabase retires the session in the cookie store, and
+  // those deletions ride out on the response below.
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -50,10 +55,18 @@ export async function middleware(request: NextRequest) {
       url.searchParams.set(NEXT_PARAM, attempted);
     }
 
-    return NextResponse.redirect(url);
+    // A fresh response starts with no cookies, so Supabase's writes have to be
+    // carried over by hand - otherwise the dead cookie survives the redirect
+    // and fails again on every request after it.
+    const redirect = NextResponse.redirect(url);
+    for (const cookie of getResponse().cookies.getAll()) {
+      redirect.cookies.set(cookie);
+    }
+
+    return redirect;
   }
 
-  return response;
+  return getResponse();
 }
 
 /**

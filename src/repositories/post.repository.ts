@@ -1,22 +1,13 @@
 import { Injectable, inject } from '@lib/di/injectable';
-import { Prisma } from '@generated/prisma/client';
 import { Db } from '@lib/db';
 import { BaseRepository } from './base.repository';
 import { toPost } from '@models/post.model';
-import { CreatePostDto, EditorContent, UpdatePostDto } from '@dtos/post.dto';
+import { CreatePostDto, UpdatePostDto } from '@dtos/post.dto';
 
 /**
  * Post Repository
  * Handles data access for Post entities
  */
-/**
- * Prisma's `InputJsonValue` demands an index signature, which a precise
- * validated object type doesn't have - even though the value is plain JSON.
- * Narrowing happens here, at the Prisma boundary, and nowhere else.
- */
-function asJson(content: EditorContent): Prisma.InputJsonObject {
-  return content as unknown as Prisma.InputJsonObject;
-}
 
 /**
  * Posts arrive here with their tags already resolved to ids - the join table
@@ -52,7 +43,7 @@ export class PostRepository extends BaseRepository {
     const post = await this.db.post.create({
       data: {
         ...postData,
-        content: asJson(postData.content),
+        content: this.asJson(postData.content),
         tags: tagIds?.length
           ? {
               create: tagIds.map((tagId) => ({
@@ -123,13 +114,17 @@ export class PostRepository extends BaseRepository {
    */
   async findAll(options?: {
     includeContent?: boolean;
-    publishedOnly?: boolean;
-    orderBy?: 'asc' | 'desc';
+    /** `true` published only, `false` drafts only; undefined lists both. */
+    published?: boolean;
+    /** Defaults to `publishedAt`, else `updatedAt` - a draft's `publishedAt` is null. */
+    sortBy?: 'publishedAt' | 'createdAt' | 'updatedAt';
+    direction?: 'asc' | 'desc';
   }) {
-    const direction = options?.orderBy ?? 'desc';
+    const direction = options?.direction ?? 'desc';
+    const sortBy = options?.sortBy ?? (options?.published === true ? 'publishedAt' : 'updatedAt');
 
     const posts = await this.db.post.findMany({
-      where: options?.publishedOnly ? { published: true } : undefined,
+      where: options?.published === undefined ? undefined : { published: options.published },
       select: {
         id: true,
         title: true,
@@ -147,9 +142,7 @@ export class PostRepository extends BaseRepository {
           },
         },
       },
-      // Published posts order by when they went live; drafts have no
-      // `publishedAt`, so the admin list falls back to creation order.
-      orderBy: options?.publishedOnly ? { publishedAt: direction } : { createdAt: direction },
+      orderBy: { [sortBy]: direction },
     });
 
     return posts.map(toPost);
@@ -177,7 +170,7 @@ export class PostRepository extends BaseRepository {
       where: { id },
       data: {
         ...updateData,
-        ...(content ? { content: asJson(content) } : {}),
+        ...(content ? { content: this.asJson(content) } : {}),
         ...(tagUpdate && { tags: tagUpdate }),
       },
       include: {

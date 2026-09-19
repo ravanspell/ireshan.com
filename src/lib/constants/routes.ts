@@ -41,8 +41,18 @@ export const ADMIN_ROUTES = {
   /** Admin dashboard */
   DASHBOARD: '/admin',
 
-  /** Blog editor */
+  /** Unpublished posts, waiting to be finished */
+  DRAFTS: '/admin/drafts',
+
+  /** Blog editor, opened on a blank draft */
   EDITOR: '/admin/editor',
+
+  /**
+   * Open the editor on an existing post.
+   * @param id - The post id
+   * @returns The editor URL preloaded with that post
+   */
+  EDIT_POST: (id: string) => `${ADMIN_ROUTES.EDITOR}?id=${encodeURIComponent(id)}`,
 } as const;
 
 /**

@@ -28,6 +28,7 @@
       "@molecules/*": ["./src/components/molecules/*"],
       "@organisms/*": ["./src/components/organisms/*"],
       "@templates/*": ["./src/components/templates/*"],
+      "@hooks/*": ["./src/hooks/*"],
       "@lib/*": ["./src/lib/*"],
       "@models/*": ["./src/models/*"],
       "@repositories/*": ["./src/repositories/*"],

@@ -38,6 +38,7 @@ export class PostController extends BaseController {
       revalidatePath(ROUTES.BLOG.INDEX);
       revalidatePath(ROUTES.BLOG.POST(post.slug));
       revalidatePath(ROUTES.ADMIN.DASHBOARD);
+      revalidatePath(ROUTES.ADMIN.DRAFTS);
 
       return { success: true as const, data: post };
     } catch (error) {
@@ -71,6 +72,7 @@ export class PostController extends BaseController {
       revalidatePath(ROUTES.BLOG.INDEX);
       revalidatePath(ROUTES.BLOG.POST(post.slug));
       revalidatePath(ROUTES.ADMIN.DASHBOARD);
+      revalidatePath(ROUTES.ADMIN.DRAFTS);
 
       return { success: true as const, data: post };
     } catch (error) {
@@ -94,6 +96,7 @@ export class PostController extends BaseController {
       revalidatePath(ROUTES.BLOG.INDEX);
       revalidatePath(ROUTES.BLOG.POST(post.slug));
       revalidatePath(ROUTES.ADMIN.DASHBOARD);
+      revalidatePath(ROUTES.ADMIN.DRAFTS);
 
       return { success: true as const, data: post };
     } catch (error) {
@@ -162,6 +165,18 @@ export class PostController extends BaseController {
   }
 
   /**
+   * Unpublished posts only - the admin drafts list. Requires a session.
+   */
+  async getDraftPosts() {
+    try {
+      const posts = await this.postService.getDraftPosts();
+      return { success: true as const, data: posts };
+    } catch (error) {
+      return this.handleError(error, 'Failed to fetch drafts');
+    }
+  }
+
+  /**
    * Delete a post
    * Server Action handler
    */
@@ -172,6 +187,7 @@ export class PostController extends BaseController {
       // Revalidate cache
       revalidatePath(ROUTES.BLOG.INDEX);
       revalidatePath(ROUTES.ADMIN.DASHBOARD);
+      revalidatePath(ROUTES.ADMIN.DRAFTS);
 
       return { success: true as const, data: undefined };
     } catch (error) {

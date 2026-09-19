@@ -7,8 +7,13 @@ import { NextResponse, type NextRequest } from 'next/server';
  * Creates a Supabase client specifically for use in Next.js middleware.
  * Handles cookies correctly for the middleware environment.
  *
+ * Returns an accessor, not a response: `setAll` runs during `getUser()` - after
+ * this function returns - and *replaces* the response rather than mutating it.
+ * A returned response would be the pre-`setAll` one, losing every cookie
+ * Supabase wrote. Call `getResponse()` after the last `supabase.auth.*` call.
+ *
  * @param request - The Next.js request object
- * @returns Object containing the Supabase client and response
+ * @returns The Supabase client, and an accessor for the current response
  */
 export async function createClient(request: NextRequest) {
   // Create an unmodified response
@@ -37,5 +42,5 @@ export async function createClient(request: NextRequest) {
     },
   );
 
-  return { supabase, response };
+  return { supabase, getResponse: () => response };
 }

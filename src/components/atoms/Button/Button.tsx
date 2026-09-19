@@ -41,11 +41,8 @@ const Button = (props: SectionProps) => {
             text-xs
             px-2.5
             py-1
-
             hover:text-primary
-            transition-colors
             duration-300
-            cursor-pointer
             "
       type="button"
       onClick={onClick}

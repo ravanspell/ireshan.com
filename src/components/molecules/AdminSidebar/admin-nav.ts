@@ -1,4 +1,11 @@
-import { ExternalLink, FilePen, LayoutDashboard, Newspaper, type LucideIcon } from 'lucide-react';
+import {
+  ExternalLink,
+  FileClock,
+  FilePen,
+  LayoutDashboard,
+  Newspaper,
+  type LucideIcon,
+} from 'lucide-react';
 import { ROUTES } from '@/lib/constants/routes';
 import type { RouteMatch } from '@/lib/constants/routes';
 
@@ -13,6 +20,7 @@ export interface AdminNavItem {
 /** Primary CMS navigation. Also the source of the header breadcrumb titles. */
 export const ADMIN_NAV: readonly AdminNavItem[] = [
   { title: 'Dashboard', href: ROUTES.ADMIN.DASHBOARD, icon: LayoutDashboard, match: 'exact' },
+  { title: 'Drafts', href: ROUTES.ADMIN.DRAFTS, icon: FileClock, match: 'prefix' },
   { title: 'Editor', href: ROUTES.ADMIN.EDITOR, icon: FilePen, match: 'prefix' },
 ];
 
