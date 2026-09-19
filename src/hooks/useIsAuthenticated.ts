@@ -1,6 +1,6 @@
 'use client';
 
-import useSession from './useSession';
+import useSession from '@hooks/useSession';
 
 /**
  * Boolean read of {@link useSession} - use that one when you also need the

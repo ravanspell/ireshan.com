@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef } from 'react';
 import type { OutputData } from '@editorjs/editorjs';
 import { loadEditorTools } from '@lib/editor-tools';
 import { uploadMedia } from '@lib/media-upload';
-import { useIsMounted } from '@/utils/hooks/useMounted';
+import { useIsMounted } from '@hooks/useMounted';
 
 /** The element Editor.js mounts into. Rendered by whoever calls this hook. */
 export const EDITOR_HOLDER_ID = 'editorjs';
@@ -45,7 +45,7 @@ export function useEditorJs({ initialData, onUploadError }: UseEditorJsOptions) 
   const onUploadErrorRef = useRef(onUploadError);
   onUploadErrorRef.current = onUploadError;
 
-  const reportUploadErrors = useCallback(async <T,>(upload: Promise<T>): Promise<T> => {
+  const reportUploadErrors = useCallback(async <T>(upload: Promise<T>): Promise<T> => {
     onUploadErrorRef.current(null);
     try {
       return await upload;

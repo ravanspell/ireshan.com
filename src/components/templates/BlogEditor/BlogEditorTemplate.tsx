@@ -4,7 +4,7 @@ import { useState, useTransition } from 'react';
 import { saveArticleAction } from '@/app/actions/artical';
 import BlogEditor from '@organisms/BlogEditor/BlogEditor';
 import type { SaveStatus } from '@molecules/EditorToolbar/EditorToolbar';
-import { useEditorJs } from '@/utils/hooks/useEditorJs';
+import { useEditorJs } from '@hooks/useEditorJs';
 import { slugify } from '@lib/slug';
 
 export interface BlogEditorTemplateProps {
@@ -48,6 +48,10 @@ export default function BlogEditorTemplate({
   // Stops deriving from the title once the author edits the slug by hand, so
   // renaming a published post doesn't silently change its URL.
   const [slugTouched, setSlugTouched] = useState(Boolean(initialSlug));
+  // Held in state rather than read on render: pulling the document out of
+  // Editor.js is asynchronous.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [previewData, setPreviewData] = useState<any>(null);
 
   const { save: saveDocument } = useEditorJs({ initialData, onUploadError: setUploadError });
 
@@ -64,8 +68,25 @@ export default function BlogEditorTemplate({
   };
 
   /**
+   * Swap between writing and the reader's view, snapshotting the editor on the
+   * way in. Nothing is written to the database - this previews unsaved work.
+   */
+  const togglePreview = async (): Promise<void> => {
+    if (previewData) {
+      setPreviewData(null);
+      return;
+    }
+
+    const outputData = await saveDocument();
+    // Only `undefined` while Editor.js is still loading - nothing to show yet.
+    if (!outputData) return;
+
+    setPreviewData(outputData);
+  };
+
+  /**
    * Save the content of the blog post
-   * 
+   *
    * @param published publish status true = published / false= draft
    * @returns void
    */
@@ -98,9 +119,7 @@ export default function BlogEditorTemplate({
 
         if (!result?.success) {
           // Field errors come back from Zod, `error` from a domain failure.
-          const message = result?.errors
-            ? Object.values(result.errors).join(', ')
-            : result?.error;
+          const message = result?.errors ? Object.values(result.errors).join(', ') : result?.error;
           console.error('Saving failed:', message);
           setSaveError(message ?? 'Unknown error');
           setStatus('error');
@@ -137,6 +156,9 @@ export default function BlogEditorTemplate({
       status={status}
       saveError={saveError}
       uploadError={uploadError}
+      isPreview={previewData !== null}
+      previewData={previewData}
+      onTogglePreview={togglePreview}
       onPublish={() => save(true)}
       onSaveDraft={() => save(false)}
     />

@@ -13,6 +13,8 @@ export interface EditorToolbarProps {
   status: SaveStatus;
   /** The reason the last save failed, when there is one to show. */
   saveError: string | null;
+  isPreview: boolean;
+  onTogglePreview: () => void;
   onPublish: () => void;
   onSaveDraft: () => void;
 }
@@ -30,15 +32,23 @@ export default function EditorToolbar({
   isPending,
   status,
   saveError,
+  isPreview,
+  onTogglePreview,
   onPublish,
   onSaveDraft,
 }: EditorToolbarProps) {
   return (
     <div className="space-y-2 pb-0.5">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-foreground text-xl font-semibold">{label}</h1>
+        <h1 className="text-foreground text-xl font-semibold">
+          {label}
+          {isPreview && <span className="text-muted-foreground font-normal"> · Preview</span>}
+        </h1>
 
         <div className="flex items-center gap-2">
+          <Button variant="ghost" disabled={isPending} onClick={onTogglePreview}>
+            {isPreview ? 'Back to editing' : 'Preview'}
+          </Button>
           <Button variant="outline" disabled={isPending} onClick={onSaveDraft}>
             Save draft
           </Button>
