@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import Editor from '@molecules/BlogEditor/BlogEditor';
+import BlogEditorTemplate from '@templates/BlogEditor/BlogEditorTemplate';
 import { resolve } from '@/lib/di/container';
 import { PostController } from '@controllers/post.controller';
 import { TagController } from '@controllers/tag.controller';
@@ -30,12 +30,7 @@ export default async function EditorPage({
   const { id } = await searchParams;
 
   if (!id) {
-    return (
-      <div>
-        <h1 className="text-foreground mb-4 text-2xl font-bold">New Post</h1>
-        <Editor tagSuggestions={await getTagSuggestions()} />
-      </div>
-    );
+    return <BlogEditorTemplate tagSuggestions={await getTagSuggestions()} />;
   }
 
   // Drafts included - this read requires a session, which middleware has
@@ -52,19 +47,14 @@ export default async function EditorPage({
   const post = result.data;
 
   return (
-    <div >
-      <h1 className="text-foreground mb-4 text-2xl font-bold">
-        {post.published ? 'Edit Post' : 'Edit Draft'}
-      </h1>
-      <Editor
-        articleId={post.id}
-        initialTitle={post.title}
-        initialSlug={post.slug}
-        initialPublished={post.published}
-        initialTags={post.tags.map((tag) => tag.name)}
-        tagSuggestions={tagSuggestions}
-        initialData={post.content}
-      />
-    </div>
+    <BlogEditorTemplate
+      articleId={post.id}
+      initialTitle={post.title}
+      initialSlug={post.slug}
+      initialPublished={post.published}
+      initialTags={post.tags.map((tag) => tag.name)}
+      tagSuggestions={tagSuggestions}
+      initialData={post.content}
+    />
   );
 }
