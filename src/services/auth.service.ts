@@ -2,6 +2,7 @@ import { Injectable } from "@lib/di/injectable";
 import { BaseService } from "./base.service";
 import { createClient } from "@/utils/supabase/server";
 import { loginSchema, LoginFormData } from "@dtos/auth.dto";
+import { isSignedOutError } from "@lib/auth/session-errors";
 
 /**
  * Custom error class for authentication failures.
@@ -74,10 +75,11 @@ export class AuthService extends BaseService {
     } = await supabase.auth.getUser();
 
     if (error) {
-      // "Auth session missing" is the common case - no logged-in user.
-      // Log anything else so unexpected failures aren't silently treated as "logged out".
-      if (error.message !== "Auth session missing!") {
-        console.error("getCurrentUser error:", error.message);
+      // No session, or one Supabase just declared dead - both mean "nobody is
+      // signed in", which is an answer, not a failure. Log anything else so
+      // unexpected failures aren't silently treated as "logged out".
+      if (!isSignedOutError(error)) {
+        this.logError("getCurrentUser failed", error);
       }
       return null;
     }
