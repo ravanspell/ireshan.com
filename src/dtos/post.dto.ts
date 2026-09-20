@@ -43,7 +43,13 @@ const slug = z
  * a tag row - creating the missing ones - before the join table is written.
  */
 const tagNames = z
-  .array(z.string().trim().min(1, 'A tag cannot be empty').max(50, 'Tag must be less than 50 characters'))
+  .array(
+    z
+      .string()
+      .trim()
+      .min(1, 'A tag cannot be empty')
+      .max(50, 'Tag must be less than 50 characters'),
+  )
   .max(10, 'A post can have at most 10 tags');
 
 /**
@@ -86,8 +92,17 @@ export const upsertPostSchema = z.object({
 });
 
 /**
+ * Unpublish Post Schema
+ * Id only - the service decides what changes, so there is nothing else to take.
+ */
+export const unpublishPostSchema = z.object({
+  id: z.uuid('Invalid post ID'),
+});
+
+/**
  * Type Definitions
  */
 export type CreatePostDto = z.infer<typeof createPostSchema>;
 export type UpdatePostDto = z.infer<typeof updatePostSchema>;
 export type UpsertPostDto = z.infer<typeof upsertPostSchema>;
+export type UnpublishPostDto = z.infer<typeof unpublishPostSchema>;

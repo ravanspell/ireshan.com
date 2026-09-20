@@ -208,6 +208,16 @@ export class PostService extends BaseService {
   }
 
   /**
+   * Back to draft without deleting: the post reappears in `/admin/drafts`.
+   *
+   * Authorisation, the existence check and the kept `publishedAt` all come from
+   * `updatePost`; passing nothing else leaves the content and tags alone.
+   */
+  async unpublishPost(id: string) {
+    return this.updatePost(id, { published: false });
+  }
+
+  /**
    * Delete a post
    */
   async deletePost(id: string) {

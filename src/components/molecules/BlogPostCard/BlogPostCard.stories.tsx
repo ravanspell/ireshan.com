@@ -38,3 +38,8 @@ export const WithoutTags: Story = {
 export const WithoutExcerpt: Story = {
   args: { post: { ...basePost, excerpt: null } },
 };
+
+/** What an author sees. No session needed - the handler is the switch. */
+export const WithAuthorControls: Story = {
+  args: { post: basePost, onUnpublish: () => {} },
+};

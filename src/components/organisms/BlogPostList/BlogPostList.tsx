@@ -5,11 +5,13 @@ import type { Post } from '@models/post.model';
 export interface BlogPostListProps {
   /** Published posts, already ordered by the repository. */
   posts: Post[];
+  /** Passed through to each card; only signed-in authors get one. */
+  onUnpublish?: (post: Post) => void;
 }
 
 /** The published posts, or the empty state. */
 const BlogPostList = (props: BlogPostListProps) => {
-  const { posts } = props;
+  const { posts, onUnpublish } = props;
 
   if (posts.length === 0) {
     return (
@@ -32,7 +34,7 @@ const BlogPostList = (props: BlogPostListProps) => {
     >
       {posts.map((post) => (
         <li key={post.id} className="py-10 first:pt-0 last:pb-0">
-          <BlogPostCard post={post} />
+          <BlogPostCard post={post} onUnpublish={onUnpublish} />
         </li>
       ))}
     </ul>

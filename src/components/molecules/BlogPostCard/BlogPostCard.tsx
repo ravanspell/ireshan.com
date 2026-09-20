@@ -1,7 +1,8 @@
 import Link from 'next/link';
+import { EyeOff } from 'lucide-react';
+import Button from '@atoms/Button/Button';
 import Typography from '@atoms/Typography/Typography';
 import TagListContainer from '@molecules/TagListContainer/TagLIstContainer';
-import PostEditLink from '@molecules/PostEditLink/PostEditLink';
 import { ROUTES } from '@lib/constants/routes';
 import { formatDate } from '@lib/date';
 import type { Post } from '@models/post.model';
@@ -9,11 +10,20 @@ import type { Post } from '@models/post.model';
 export interface BlogPostCardProps {
   /** Rendered from `excerpt`, never `content` - the index query skips it. */
   post: Post;
+  /**
+   * Opens the template's confirmation dialog. Supplied only for signed-in
+   * authors, so its presence is what renders the control - the card itself
+   * never reads the session.
+   */
+  onUnpublish?: (post: Post) => void;
 }
 
-/** One post on the blog index, with an edit shortcut for signed-in authors. */
+/**
+ * One post on the blog index. Authors get "Unpublish" and nothing else -
+ * editing happens on the draft, so a live post is taken down first.
+ */
 const BlogPostCard = (props: BlogPostCardProps) => {
-  const { post } = props;
+  const { post, onUnpublish } = props;
 
   return (
     // No panel chrome - `relative` is only here to anchor the link overlay below.
@@ -41,7 +51,17 @@ const BlogPostCard = (props: BlogPostCardProps) => {
           </Link>
         </Typography>
 
-        <PostEditLink postId={post.id} postTitle={post.title} className="shrink-0" />
+        {onUnpublish && (
+          <div className="relative z-10 shrink-0">
+            <Button
+              label="Unpublish"
+              icon={EyeOff}
+              onClick={() => onUnpublish(post)}
+              buttonAttributes={{ 'aria-label': `Move ${post.title} to drafts` }}
+              testId={`unpublish-post-${post.id}`}
+            />
+          </div>
+        )}
       </div>
 
       {post.publishedAt && (
