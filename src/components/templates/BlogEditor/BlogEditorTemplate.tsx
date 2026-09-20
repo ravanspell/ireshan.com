@@ -3,7 +3,7 @@
 import { useState, useTransition } from 'react';
 import { saveArticleAction } from '@/app/actions/artical';
 import BlogEditor from '@organisms/BlogEditor/BlogEditor';
-import type { SaveStatus } from '@molecules/EditorToolbar/EditorToolbar';
+import type { SaveAction, SaveStatus } from '@molecules/EditorToolbar/EditorToolbar';
 import { useEditorJs } from '@hooks/useEditorJs';
 import { slugify } from '@lib/slug';
 
@@ -40,6 +40,8 @@ export default function BlogEditorTemplate({
 }: BlogEditorTemplateProps) {
   const [isPending, startTransition] = useTransition();
   const [status, setStatus] = useState<SaveStatus>('idle');
+  // keeps track which action is pending right now to show loading
+  const [pendingAction, setPendingAction] = useState<SaveAction | null>(null);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [title, setTitle] = useState(initialTitle);
@@ -105,6 +107,7 @@ export default function BlogEditorTemplate({
       if (!outputData) return;
 
       setStatus('saving');
+      setPendingAction(published ? 'publish' : 'draft');
 
       // call the server action (runs on server)
       startTransition(async () => {
@@ -146,6 +149,7 @@ export default function BlogEditorTemplate({
       modeLabel={modeLabel}
       isPublished={initialPublished}
       isPending={isPending}
+      pendingAction={pendingAction}
       title={title}
       onTitleChange={onTitleChange}
       slug={slug}
