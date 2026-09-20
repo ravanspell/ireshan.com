@@ -12,10 +12,16 @@ export interface CardProps {
    * pass the custom styles
    */
   className?: string;
+  /**
+   * whether the whole card acts as one target
+   * `false` drops the pointer cursor, for a card
+   * whose only actions are the controls inside it
+   */
+  interactive?: boolean;
 }
 
 const Card = (props: CardProps) => {
-  const { children, id, className = '' } = props;
+  const { children, id, className = '', interactive = true } = props;
   return (
     <div
       id={id}
@@ -29,7 +35,7 @@ const Card = (props: CardProps) => {
                 bg-linear-to-b
                 from-border
                 to-card
-                cursor-pointer
+                ${interactive ? 'cursor-pointer' : ''}
                 transition-all
                 duration-200
                 hover:shadow-md

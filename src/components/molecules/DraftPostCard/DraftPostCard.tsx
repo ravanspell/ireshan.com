@@ -1,6 +1,6 @@
-import Link from 'next/link';
 import { SquarePen } from 'lucide-react';
 import Card from '@atoms/Card/Card';
+import LinkButton from '@atoms/LinkButton/LinkButton';
 import Typography from '@atoms/Typography/Typography';
 import TagListContainer from '@molecules/TagListContainer/TagLIstContainer';
 import { ROUTES } from '@lib/constants/routes';
@@ -13,32 +13,30 @@ export interface DraftPostCardProps {
 }
 
 /**
- * One unfinished post on the drafts list. The whole card is a single link into
- * the editor - a title link plus an "edit" button would share one target.
+ * One unfinished post on the drafts list. The card is inert - the only way into
+ * the editor is the explicit "Edit" button, so nothing navigates by accident.
  */
 const DraftPostCard = (props: DraftPostCardProps) => {
   const { post } = props;
 
   return (
-    <Card id={`draft-post-card-${post.id}`} className="group/draft">
+    <Card id={`draft-post-card-${post.id}`} interactive={false}>
       <article className="flex flex-col gap-y-2">
         <div className="flex items-start justify-between gap-4">
           <Typography
             variant="h2"
             as="h2"
-            className="text-lg font-semibold transition-colors duration-300 group-hover/draft:text-primary"
-          >
-            <Link href={ROUTES.ADMIN.EDIT_POST(post.id)}>
-              {post.title || 'Untitled draft'}
-              {/* Stretches the link over the card without nesting interactive
-                  elements inside it. */}
-              <span className="absolute inset-0" />
-            </Link>
-          </Typography>
+            className="text-lg font-semibold"
+            text={post.title || 'Untitled draft'}
+          />
 
-          <SquarePen
-            className="text-muted-foreground size-4 shrink-0 transition-colors duration-300 group-hover/draft:text-primary"
-            aria-hidden="true"
+          <LinkButton
+            href={ROUTES.ADMIN.EDIT_POST(post.id)}
+            label="Edit"
+            icon={SquarePen}
+            ariaLabel={`Edit ${post.title || 'untitled draft'}`}
+            className="shrink-0"
+            testId={`draft-edit-${post.id}`}
           />
         </div>
 
@@ -50,8 +48,6 @@ const DraftPostCard = (props: DraftPostCardProps) => {
             // `updatedAt`, not `createdAt` - and how the list is ordered.
             text={`Edited ${formatDateTime(post.updatedAt)}`}
           />
-          <span aria-hidden="true">·</span>
-          <Typography variant="caption" as="code" className="font-mono" text={`/${post.slug}`} />
         </div>
 
         <Typography
