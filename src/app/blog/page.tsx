@@ -7,7 +7,7 @@ import BlogIndex from '@templates/BlogIndex/BlogIndex';
  * publishing shows up immediately - this is only the ceiling for outside changes.
  *
  * Nothing in this tree reads the session on the server: that is what keeps the
- * route static, and why `PostEditLink` resolves it in the browser.
+ * route static, and why `BlogIndex` resolves it in the browser.
  */
 export const revalidate = 3600;
 

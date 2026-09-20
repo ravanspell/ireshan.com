@@ -13,7 +13,7 @@ import { cookies } from 'next/headers';
  *
  * @example
  * // In a server action
- * import { createClient } from '@/utils/supabase/server'
+ * import { createClient } from '@lib/supabase/server'
  *
  * export async function myAction() {
  *   const supabase = await createClient()

@@ -1,7 +1,12 @@
 import { Injectable, inject } from '@lib/di/injectable';
 import { BaseController } from './base.controller';
 import { PostService } from '@services/post.service';
-import { createPostSchema, updatePostSchema, upsertPostSchema } from '@dtos/post.dto';
+import {
+  createPostSchema,
+  unpublishPostSchema,
+  updatePostSchema,
+  upsertPostSchema,
+} from '@dtos/post.dto';
 import { revalidatePath } from 'next/cache';
 import { ROUTES } from '@lib/constants/routes';
 
@@ -173,6 +178,31 @@ export class PostController extends BaseController {
       return { success: true as const, data: posts };
     } catch (error) {
       return this.handleError(error, 'Failed to fetch drafts');
+    }
+  }
+
+  /**
+   * Move a published post back to draft
+   * Server Action handler
+   */
+  async unpublishPost(id: string) {
+    try {
+      // Validate with Zod
+      const validated = unpublishPostSchema.parse({ id });
+
+      // Unpublish post
+      const post = await this.postService.unpublishPost(validated.id);
+
+      // Revalidate cache - the index loses a card and the post's URL 404s.
+      revalidatePath(ROUTES.BLOG.INDEX);
+      revalidatePath(ROUTES.BLOG.POST(post.slug));
+      revalidatePath(ROUTES.ADMIN.DASHBOARD);
+      revalidatePath(ROUTES.ADMIN.DRAFTS);
+
+      // No payload - the caller needs the outcome, not the block document.
+      return { success: true as const, data: undefined };
+    } catch (error) {
+      return this.handleError(error, 'Failed to unpublish post');
     }
   }
 

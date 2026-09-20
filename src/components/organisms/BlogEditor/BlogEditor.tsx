@@ -2,7 +2,10 @@
 
 import dynamic from 'next/dynamic';
 import EditorField from '@molecules/EditorField/EditorField';
-import EditorToolbar, { type SaveStatus } from '@molecules/EditorToolbar/EditorToolbar';
+import EditorToolbar, {
+  type SaveAction,
+  type SaveStatus,
+} from '@molecules/EditorToolbar/EditorToolbar';
 import TagInput from '@molecules/TagInput/TagInput';
 import { EDITOR_HOLDER_ID } from '@hooks/useEditorJs';
 
@@ -26,6 +29,8 @@ export interface BlogEditorProps {
   modeLabel: string;
   isPublished: boolean;
   isPending: boolean;
+  /** Which save button is waiting on the server, so only it reads "Saving...". */
+  pendingAction: SaveAction | null;
 
   title: string;
   onTitleChange: (value: string) => void;
@@ -59,6 +64,7 @@ export default function BlogEditor({
   modeLabel,
   isPublished,
   isPending,
+  pendingAction,
   title,
   onTitleChange,
   slug,
@@ -81,6 +87,7 @@ export default function BlogEditor({
         label={modeLabel}
         isPublished={isPublished}
         isPending={isPending}
+        pendingAction={pendingAction}
         status={status}
         saveError={saveError}
         isPreview={isPreview}

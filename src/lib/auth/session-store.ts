@@ -1,4 +1,4 @@
-import { createClient } from '@/utils/supabase/client';
+import { createClient } from '@lib/supabase/client';
 
 /**
  * Browser-side session store: one client, one `getUser()` and one

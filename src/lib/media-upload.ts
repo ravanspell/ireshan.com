@@ -1,5 +1,5 @@
 import { createUploadUrlAction } from '@/app/actions/media';
-import { createClient } from '@/utils/supabase/client';
+import { createClient } from '@lib/supabase/client';
 import { MEDIA_BUCKET, checkMedia } from '@lib/constants/media';
 
 /** Longest edge a blog image is stored at - wider than the post column at 2x. */
