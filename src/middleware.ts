@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/utils/supabase/middleware';
+import { createClient } from '@lib/supabase/middleware';
 import { ROUTES, isPublicRoute } from '@/lib/constants/routes';
 import { NEXT_PARAM, safeNextPath } from '@/lib/auth/redirect';
 
@@ -48,9 +48,7 @@ export async function middleware(request: NextRequest) {
     // attempted route, not to /login, so it is folded into `next` instead.
     url.search = '';
 
-    const attempted = safeNextPath(
-      `${request.nextUrl.pathname}${request.nextUrl.search}`,
-    );
+    const attempted = safeNextPath(`${request.nextUrl.pathname}${request.nextUrl.search}`);
     if (attempted) {
       url.searchParams.set(NEXT_PARAM, attempted);
     }

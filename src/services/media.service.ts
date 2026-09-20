@@ -1,10 +1,10 @@
-import { randomUUID } from "crypto";
-import { Injectable, inject } from "@lib/di/injectable";
-import { BaseService } from "./base.service";
-import { AuthService } from "./auth.service";
-import { createClient } from "@/utils/supabase/server";
-import { CreateUploadUrlDto } from "@dtos/media.dto";
-import { MEDIA_BUCKET, checkMedia } from "@lib/constants/media";
+import { randomUUID } from 'crypto';
+import { Injectable, inject } from '@lib/di/injectable';
+import { BaseService } from './base.service';
+import { AuthService } from './auth.service';
+import { createClient } from '@lib/supabase/server';
+import { CreateUploadUrlDto } from '@dtos/media.dto';
+import { MEDIA_BUCKET, checkMedia } from '@lib/constants/media';
 
 /** What the browser needs to upload straight to Supabase Storage. */
 export interface SignedUpload {
@@ -43,7 +43,7 @@ export class MediaService extends BaseService {
     // collide with or overwrite an existing file, and the extension comes from
     // the validated type rather than a user-supplied filename.
     const now = new Date();
-    const month = String(now.getUTCMonth() + 1).padStart(2, "0");
+    const month = String(now.getUTCMonth() + 1).padStart(2, '0');
     const path = `posts/${now.getUTCFullYear()}/${month}/${randomUUID()}.${check.ext}`;
 
     const supabase = await createClient();
@@ -51,8 +51,8 @@ export class MediaService extends BaseService {
 
     const { data: signed, error } = await bucket.createSignedUploadUrl(path);
     if (error || !signed) {
-      this.logError("createSignedUploadUrl failed", error);
-      throw new Error("Could not prepare the upload");
+      this.logError('createSignedUploadUrl failed', error);
+      throw new Error('Could not prepare the upload');
     }
 
     return {

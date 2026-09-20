@@ -1,8 +1,8 @@
-import { Injectable } from "@lib/di/injectable";
-import { BaseService } from "./base.service";
-import { createClient } from "@/utils/supabase/server";
-import { loginSchema, LoginFormData } from "@dtos/auth.dto";
-import { isSignedOutError } from "@lib/auth/session-errors";
+import { Injectable } from '@lib/di/injectable';
+import { BaseService } from './base.service';
+import { createClient } from '@lib/supabase/server';
+import { loginSchema, LoginFormData } from '@dtos/auth.dto';
+import { isSignedOutError } from '@lib/auth/session-errors';
 
 /**
  * Custom error class for authentication failures.
@@ -14,7 +14,7 @@ export class AuthError extends Error {
     public readonly cause?: unknown,
   ) {
     super(message);
-    this.name = "AuthError";
+    this.name = 'AuthError';
   }
 }
 
@@ -79,7 +79,7 @@ export class AuthService extends BaseService {
       // signed in", which is an answer, not a failure. Log anything else so
       // unexpected failures aren't silently treated as "logged out".
       if (!isSignedOutError(error)) {
-        this.logError("getCurrentUser failed", error);
+        this.logError('getCurrentUser failed', error);
       }
       return null;
     }
