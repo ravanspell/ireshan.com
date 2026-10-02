@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter, Manrope, Source_Code_Pro } from 'next/font/google';
 import NextTopLoader from 'nextjs-toploader';
+import { Analytics } from '@vercel/analytics/next';
 import '@fortawesome/fontawesome-svg-core/styles.css';
 import '../styles/style.css';
 
@@ -96,6 +97,7 @@ export default function RootLayout({
       >
         <NextTopLoader color="var(--primary)" showSpinner={false} showForHashAnchor={false} />
         {children}
+        <Analytics />
       </body>
     </html>
   );
