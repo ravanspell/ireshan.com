@@ -8,6 +8,7 @@ import CMSViewer from '@molecules/CMSViewer/CMSViewer';
 import Tag from '@/components/atoms/Tag/Tag';
 import ProfileImage from '@/components/molecules/ProfileImage/ProfileImage';
 import TableOfContents from '@molecules/TableOfContents/TableOfContents';
+import TableOfContentsSheet from '@molecules/TableOfContentsSheet/TableOfContentsSheet';
 import { extractHeadings, toTocEntries } from '@lib/editor-content';
 import { cn } from '@/lib/utils';
 
@@ -24,7 +25,7 @@ type PageProps = { params: Promise<{ slug: string }> };
  * Layout when the post has a table of contents (sticky, level with the title):
  * - xl+: equal gutters keep the article centred; the TOC fills the right one.
  * - md-xl: two columns, as the gutters are too narrow for it.
- * - phones: stacked, TOC first.
+ * - phones: no room for a column; `TableOfContentsSheet` opens it instead.
  */
 const WITH_TOC = {
   page: [
@@ -33,8 +34,7 @@ const WITH_TOC = {
   ],
   article: 'xl:col-start-2',
   aside: [
-    'order-first mb-8',
-    'md:order-none md:mb-0 md:mt-6 md:self-start',
+    'hidden md:block md:mt-6 md:self-start',
     'md:sticky md:top-12 md:max-h-[calc(100vh-6rem)] md:overflow-y-auto',
     'xl:col-start-3 xl:row-start-1 xl:max-w-64',
   ],
@@ -116,9 +116,12 @@ export default async function PostPage({ params }: PageProps) {
       </article>
 
       {hasToc && (
-        <aside className={cn(WITH_TOC.aside)}>
-          <TableOfContents entries={tocEntries} />
-        </aside>
+        <>
+          <aside className={cn(WITH_TOC.aside)}>
+            <TableOfContents entries={tocEntries} />
+          </aside>
+          <TableOfContentsSheet entries={tocEntries} className="md:hidden" />
+        </>
       )}
     </div>
   );

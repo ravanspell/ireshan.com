@@ -7,6 +7,11 @@ import type { TocEntry } from '@lib/editor-content';
 export interface TableOfContentsProps {
   /** From `toTocEntries`; expected non-empty. */
   entries: TocEntry[];
+  /**
+   * Takes over link clicks from the browser's hash jump - for a container
+   * that must close before the page can scroll (the mobile sheet).
+   */
+  onNavigate?: (id: string) => void;
   className?: string;
 }
 
@@ -21,7 +26,7 @@ const ACTIVE_OFFSET_PX = 8;
 const JUMP_SETTLE_MS = 150;
 
 /** Heading navigation for a blog post, highlighting the section being read. */
-const TableOfContents = ({ entries, className }: TableOfContentsProps) => {
+const TableOfContents = ({ entries, onNavigate, className }: TableOfContentsProps) => {
   const [activeId, setActiveId] = useState(entries[0]?.id);
   /**
    * True during a link jump, so scroll tracking can't override the clicked
@@ -59,6 +64,8 @@ const TableOfContents = ({ entries, className }: TableOfContentsProps) => {
     };
 
     window.addEventListener('scroll', onScroll, { passive: true });
+    // Also on mount - the sheet mounts a fresh copy mid-page on every open.
+    frame = requestAnimationFrame(update);
     return () => {
       window.removeEventListener('scroll', onScroll);
       cancelAnimationFrame(frame);
@@ -73,7 +80,12 @@ const TableOfContents = ({ entries, className }: TableOfContentsProps) => {
           <li key={entry.id}>
             <a
               href={`#${entry.id}`}
-              onClick={() => {
+              onClick={(event) => {
+                if (onNavigate) {
+                  event.preventDefault();
+                  onNavigate(entry.id);
+                  return;
+                }
                 jumping.current = true;
                 settleJump();
                 setActiveId(entry.id);
