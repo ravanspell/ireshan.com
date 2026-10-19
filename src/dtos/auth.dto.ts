@@ -8,7 +8,7 @@ import { z } from 'zod';
  *
  * Validation Rules:
  * - Email: Required, valid email format, trimmed of whitespace
- * - Password: Required, minimum 6 characters
+ * - Password: Required
  *
  * @example
  * // Client-side with React Hook Form
@@ -37,12 +37,7 @@ export const loginSchema = z.object({
     .trim()
     .min(1, 'Email is required')
     .pipe(z.email('Please enter a valid email address')),
-
-  /** User's password - minimum 6 characters */
-  password: z
-    .string()
-    .min(1, 'Password is required')
-    .min(6, 'Password must be at least 6 characters'),
+  password: z.string().min(1, 'Password is required'),
 });
 
 /**
