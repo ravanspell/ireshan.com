@@ -4,7 +4,7 @@ import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import BlogPostList from '@organisms/BlogPostList/BlogPostList';
 import AlertDialog from '@molecules/AlertDialog/AlertDialog';
-import Typography from '@atoms/Typography/Typography';
+import BlogIndexHeader from '@molecules/BlogIndexHeader/BlogIndexHeader';
 import useIsAuthenticated from '@hooks/useIsAuthenticated';
 import { unpublishPostAction } from '@/app/actions/artical';
 import type { Post } from '@models/post.model';
@@ -54,13 +54,7 @@ const BlogIndex = ({ posts }: BlogIndexProps) => {
 
   return (
     <main className="mx-auto mt-10 max-w-4xl px-4 pb-16">
-      <Typography
-        variant="h1"
-        as="h1"
-        id="blog-heading"
-        className="mb-8 text-3xl font-bold"
-        text="Blog"
-      />
+      <BlogIndexHeader showAdminLink={isAuthenticated === true} />
       {/* No handler for anonymous visitors, so the cards render no controls. */}
       <BlogPostList posts={posts} onUnpublish={isAuthenticated ? setPendingPost : undefined} />
 

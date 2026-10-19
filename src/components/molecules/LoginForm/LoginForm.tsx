@@ -56,13 +56,13 @@ const LoginForm = ({ onSubmit }: LoginFormProps) => {
       if (result?.error) {
         setServerError(result.error);
       }
+      setIsSubmitting(false);
     } catch (error) {
       // A successful login redirects from the server action, and Next.js
       // rejects the client-side action promise with a NEXT_REDIRECT error.
       // Rethrow it so the router navigates instead of showing an error.
       unstable_rethrow(error);
       setServerError('An unexpected error occurred');
-    } finally {
       setIsSubmitting(false);
     }
   };
