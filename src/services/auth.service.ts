@@ -3,6 +3,7 @@ import { BaseService } from './base.service';
 import { createClient } from '@lib/supabase/server';
 import { loginSchema, LoginFormData } from '@dtos/auth.dto';
 import { isSignedOutError } from '@lib/auth/session-errors';
+import { isSessionPastMaxAge } from '@lib/supabase/session-policy';
 
 /**
  * Custom error class for authentication failures.
@@ -81,6 +82,15 @@ export class AuthService extends BaseService {
       if (!isSignedOutError(error)) {
         this.logError('getCurrentUser failed', error);
       }
+      return null;
+    }
+
+    // Middleware enforces this on pages, but a Server Action posted from a
+    // public route never passes through it - and this is what every write
+    // authorises against.
+    const { data } = await supabase.auth.getClaims();
+    if (data && isSessionPastMaxAge(data.claims)) {
+      await supabase.auth.signOut({ scope: 'local' });
       return null;
     }
 

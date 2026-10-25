@@ -1,5 +1,6 @@
 import { type NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@lib/supabase/middleware';
+import { createClient, slideAuthCookies } from '@lib/supabase/middleware';
+import { isSessionPastMaxAge } from '@lib/supabase/session-policy';
 import { ROUTES, isPublicRoute } from '@/lib/constants/routes';
 import { NEXT_PARAM, safeNextPath } from '@/lib/auth/redirect';
 
@@ -25,9 +26,20 @@ export async function middleware(request: NextRequest) {
 
   // A dead refresh token doesn't throw - Supabase retires the session in the
   // cookie store and those deletions ride out on the response below.
-  const {
+  let {
     data: { user },
   } = await supabase.auth.getUser();
+
+  // The absolute limit. Signing out revokes this session's refresh token at
+  // Supabase, so a copied cookie dies with it, and clears the cookies through
+  // `setAll` - the redirect below carries those deletions out.
+  if (user) {
+    const { data } = await supabase.auth.getClaims();
+    if (data && isSessionPastMaxAge(data.claims)) {
+      await supabase.auth.signOut({ scope: 'local' });
+      user = null;
+    }
+  }
 
   if (!user) {
     const url = request.nextUrl.clone();
@@ -51,7 +63,9 @@ export async function middleware(request: NextRequest) {
     return redirect;
   }
 
-  return getResponse();
+  const response = getResponse();
+  slideAuthCookies(request, response);
+  return response;
 }
 
 export const config = {

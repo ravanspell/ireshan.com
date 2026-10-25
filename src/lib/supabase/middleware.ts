@@ -1,5 +1,6 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
+import { AUTH_COOKIE_OPTIONS } from './session-policy';
 
 /**
  * Create Supabase Client for Middleware
@@ -25,6 +26,7 @@ export async function createClient(request: NextRequest) {
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
     {
+      cookieOptions: AUTH_COOKIE_OPTIONS,
       cookies: {
         getAll() {
           return request.cookies.getAll();
@@ -43,4 +45,22 @@ export async function createClient(request: NextRequest) {
   );
 
   return { supabase, getResponse: () => response };
+}
+
+/**
+ * Re-issues the request's auth cookies on `response` with a fresh `maxAge`,
+ * turning the cookie lifetime into an idle timeout. Supabase only writes them
+ * on a token refresh, so without this an active session would still drop when
+ * the cookie set at the last refresh runs out.
+ *
+ * Cookies Supabase already wrote to `response` this request (a refresh, or the
+ * deletions of a dead session) are left alone - they are newer than ours.
+ */
+export function slideAuthCookies(request: NextRequest, response: NextResponse) {
+  for (const { name, value } of request.cookies.getAll()) {
+    if (!name.startsWith('sb-') || !name.includes('-auth-token')) continue;
+    if (response.cookies.has(name)) continue;
+
+    response.cookies.set(name, value, AUTH_COOKIE_OPTIONS);
+  }
 }
