@@ -7,6 +7,7 @@ import { container, type DependencyContainer } from 'tsyringe';
 
 import { getScope, type Constructor } from './injectable';
 
+import { installSessionCheck } from '@lib/auth/authenticated';
 import { Db, db } from '@lib/db';
 import { Llm } from '@lib/ai/llm';
 
@@ -96,6 +97,9 @@ export function bootstrapContainer(): DependencyContainer {
 
     container.register(token, { useClass: token }, { lifecycle: scope });
   }
+
+  // Resolved per call: each check needs the current request's cookies.
+  installSessionCheck(() => container.resolve(AuthService).getCurrentUser());
 
   // Latched only after registration succeeds, so a throw above cannot leave the
   // latch closed over a half-registered container.

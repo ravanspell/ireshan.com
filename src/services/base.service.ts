@@ -41,21 +41,6 @@ export abstract class BaseService {
     throw new BadRequestError(message);
   }
 
-  // ---------- Current-user accessors ----------
-
-  // Deliberately absent. A service that needs the current user injects
-  // `AuthService` and calls `getCurrentUser()` on it:
-  //
-  //   constructor(
-  //     @inject(PostRepository) private postRepository: PostRepository,
-  //     @inject(AuthService) private authService: AuthService,
-  //   ) { super(); }
-  //
-  // The previous helpers here resolved `AuthService` out of the container at
-  // call time, behind a dynamic import that existed only to break the import
-  // cycle that created (AuthService extends BaseService). That is a service
-  // locator: the dependency is invisible in the constructor and unmockable.
-
   // ---------- Logging ----------
 
   private get logPrefix(): string {

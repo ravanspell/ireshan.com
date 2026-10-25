@@ -1,8 +1,8 @@
 import { Injectable, inject } from '@lib/di/injectable';
 import { Llm, type LlmMessage } from '@lib/ai/llm';
-import { GenerateParagraphDto } from '@dtos/ai-writing.dto';
+import type { GenerateParagraphDto } from '@dtos/ai-writing.dto';
+import { Authenticated } from '@lib/auth/authenticated';
 import { BaseService } from './base.service';
-import { AuthService } from './auth.service';
 
 const SYSTEM_PROMPT = `
 You are a writing assistant for a personal technical blog.
@@ -20,19 +20,13 @@ eparate paragraphs with a blank line.`;
  */
 @Injectable()
 export class AiWritingService extends BaseService {
-  constructor(
-    @inject(AuthService) private authService: AuthService,
-    @inject(Llm) private llm: Llm,
-  ) {
+  constructor(@inject(Llm) private llm: Llm) {
     super();
   }
 
+  // Also guards the API quota.
+  @Authenticated()
   async generateParagraph({ idea, revisions }: GenerateParagraphDto): Promise<string> {
-    // Server Actions are public endpoints - see `PostService.requireAuthorId`.
-    // Here it also guards the API quota.
-    const user = await this.authService.getCurrentUser();
-    if (!user) this.unauthorized();
-
     // The idea, then each earlier draft followed by the feedback on it.
     return this.llm.complete([
       { role: 'system', content: SYSTEM_PROMPT },
