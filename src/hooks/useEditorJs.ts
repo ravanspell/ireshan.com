@@ -79,6 +79,7 @@ export function useEditorJs({ initialData, onUploadError }: UseEditorJsOptions) 
             return { success: 1, file: { url } };
           },
         },
+        aiAssist: true,
       }),
       onReady: () => {
         editorRef.current = editor;

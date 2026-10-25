@@ -8,16 +8,19 @@ import { container, type DependencyContainer } from 'tsyringe';
 import { getScope, type Constructor } from './injectable';
 
 import { Db, db } from '@lib/db';
+import { Llm } from '@lib/ai/llm';
 
 import { PostRepository } from '@repositories/post.repository';
 import { TagRepository } from '@repositories/tag.repository';
 import { UserRepository } from '@repositories/user.repository';
 
+import { AiWritingService } from '@services/ai-writing.service';
 import { AuthService } from '@services/auth.service';
 import { MediaService } from '@services/media.service';
 import { PostService } from '@services/post.service';
 import { TagService } from '@services/tag.service';
 
+import { AiWritingController } from '@controllers/ai-writing.controller';
 import { AuthController } from '@controllers/auth.controller';
 import { MediaController } from '@controllers/media.controller';
 import { PostController } from '@controllers/post.controller';
@@ -34,16 +37,20 @@ import { TagController } from '@controllers/tag.controller';
  * Lifetimes are not set here: each class declares its own via `@Injectable`.
  */
 const PROVIDERS: Constructor<unknown>[] = [
+  // Infrastructure (`Db` is registered by instance, below)
+  Llm,
   // Repositories
   PostRepository,
   TagRepository,
   UserRepository,
   // Services
+  AiWritingService,
   AuthService,
   MediaService,
   PostService,
   TagService,
   // Controllers
+  AiWritingController,
   AuthController,
   MediaController,
   PostController,
@@ -81,7 +88,7 @@ export function bootstrapContainer(): DependencyContainer {
       // registers as transient and ignores the lifetime its author declared.
       throw new Error(
         `[di] ${token.name} is listed as a provider but is not decorated with @Injectable(). ` +
-        `Import it from "@lib/di/injectable" instead of "tsyringe".`,
+          `Import it from "@lib/di/injectable" instead of "tsyringe".`,
       );
     }
 
