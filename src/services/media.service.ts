@@ -1,9 +1,9 @@
 import { randomUUID } from 'crypto';
-import { Injectable, inject } from '@lib/di/injectable';
+import { Injectable } from '@lib/di/injectable';
+import { Authenticated } from '@lib/auth/authenticated';
 import { BaseService } from './base.service';
-import { AuthService } from './auth.service';
 import { createClient } from '@lib/supabase/server';
-import { CreateUploadUrlDto } from '@dtos/media.dto';
+import type { CreateUploadUrlDto } from '@dtos/media.dto';
 import { MEDIA_BUCKET, checkMedia } from '@lib/constants/media';
 
 /** What the browser needs to upload straight to Supabase Storage. */
@@ -26,15 +26,8 @@ export interface SignedUpload {
  */
 @Injectable()
 export class MediaService extends BaseService {
-  constructor(@inject(AuthService) private authService: AuthService) {
-    super();
-  }
-
+  @Authenticated()
   async createSignedUpload(data: CreateUploadUrlDto): Promise<SignedUpload> {
-    // Server Actions are public endpoints - see `PostService.requireAuthorId`.
-    const user = await this.authService.getCurrentUser();
-    if (!user) this.unauthorized();
-
     // The enforcing copy of the rule the browser also ran before uploading.
     const check = checkMedia(data.contentType, data.size);
     if (!check.ok) this.badRequest(check.error);

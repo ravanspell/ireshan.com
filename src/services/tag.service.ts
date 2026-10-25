@@ -1,8 +1,8 @@
-import { Injectable, inject } from "@lib/di/injectable";
-import { BaseService } from "./base.service";
-import { AuthService } from "./auth.service";
-import { TagRepository } from "@repositories/tag.repository";
-import { CreateTagDto, UpdateTagDto } from "@dtos/tag.dto";
+import { Injectable, inject } from '@lib/di/injectable';
+import { Authenticated } from '@lib/auth/authenticated';
+import { BaseService } from './base.service';
+import { TagRepository } from '@repositories/tag.repository';
+import type { CreateTagDto, UpdateTagDto } from '@dtos/tag.dto';
 
 /**
  * Tag Service
@@ -10,35 +10,26 @@ import { CreateTagDto, UpdateTagDto } from "@dtos/tag.dto";
  */
 @Injectable()
 export class TagService extends BaseService {
-  constructor(
-    @inject(TagRepository) private tagRepository: TagRepository,
-    @inject(AuthService) private authService: AuthService,
-  ) {
+  constructor(@inject(TagRepository) private tagRepository: TagRepository) {
     super();
-  }
-
-  /** See the note on `PostService.requireAuthorId` - same reasoning. */
-  private async requireUser(): Promise<void> {
-    const user = await this.authService.getCurrentUser();
-    if (!user) this.unauthorized();
   }
 
   /**
    * Create a new tag
    * Validates slug and name uniqueness before creating
    */
+  @Authenticated()
   async createTag(data: CreateTagDto) {
-    await this.requireUser();
     // Check if slug already exists
     const slugExists = await this.tagRepository.slugExists(data.slug);
     if (slugExists) {
-      this.conflict("A tag with this slug already exists");
+      this.conflict('A tag with this slug already exists');
     }
 
     // Check if name already exists
     const nameExists = await this.tagRepository.nameExists(data.name);
     if (nameExists) {
-      this.conflict("A tag with this name already exists");
+      this.conflict('A tag with this name already exists');
     }
 
     return this.tagRepository.create(data);
@@ -51,7 +42,7 @@ export class TagService extends BaseService {
     const tag = await this.tagRepository.findBySlug(slug);
 
     if (!tag) {
-      this.notFound("Tag");
+      this.notFound('Tag');
     }
 
     return tag;
@@ -64,7 +55,7 @@ export class TagService extends BaseService {
     const tag = await this.tagRepository.findById(id);
 
     if (!tag) {
-      this.notFound("Tag");
+      this.notFound('Tag');
     }
 
     return tag;
@@ -81,13 +72,13 @@ export class TagService extends BaseService {
    * Update an existing tag
    * Validates slug and name uniqueness if they are being updated
    */
+  @Authenticated()
   async updateTag(id: string, data: Partial<UpdateTagDto>) {
-    await this.requireUser();
     // If updating slug, check if new slug already exists
     if (data.slug) {
       const slugExists = await this.tagRepository.slugExists(data.slug, id);
       if (slugExists) {
-        this.conflict("A tag with this slug already exists");
+        this.conflict('A tag with this slug already exists');
       }
     }
 
@@ -95,7 +86,7 @@ export class TagService extends BaseService {
     if (data.name) {
       const nameExists = await this.tagRepository.nameExists(data.name, id);
       if (nameExists) {
-        this.conflict("A tag with this name already exists");
+        this.conflict('A tag with this name already exists');
       }
     }
 
@@ -105,8 +96,8 @@ export class TagService extends BaseService {
   /**
    * Delete a tag
    */
+  @Authenticated()
   async deleteTag(id: string) {
-    await this.requireUser();
     return this.tagRepository.delete(id);
   }
 }

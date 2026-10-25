@@ -48,6 +48,8 @@ export default async function EditorPage({
 
   return (
     <BlogEditorTemplate
+      // The template seeds its state and Editor.js once, so another post needs a fresh instance.
+      key={post.id}
       articleId={post.id}
       initialTitle={post.title}
       initialSlug={post.slug}

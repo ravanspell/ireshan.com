@@ -55,10 +55,14 @@ export function useEditorJs({ initialData, onUploadError }: UseEditorJsOptions) 
     }
   }, []);
 
-  // Memoised on `initialData` alone: every other value it closes over is a
-  // module import or a ref. Without this the function identity changed on
-  // each render, so listing it as an effect dependency would tear down and
-  // rebuild the editor continuously.
+  // Only the seed: once mounted, Editor.js owns the document. Read through a
+  // ref because the page re-renders after every Server Action (middleware
+  // re-issues the auth cookies, which Next treats as a cookie change), handing
+  // in a new `post.content` object each time. Rebuilding on that would reset
+  // the editor to the last save - losing unsaved edits and any AI assist block.
+  // A different post remounts the template instead (`key` on the page).
+  const initialDataRef = useRef(initialData);
+
   const initiateEditorJs = useCallback(async () => {
     const EditorJS = (await import('@editorjs/editorjs')).default;
 
@@ -69,7 +73,7 @@ export function useEditorJs({ initialData, onUploadError }: UseEditorJsOptions) 
       // Editor.js's default is 300px of click-to-append space below the last
       // block, which reads as a broken empty panel.
       minHeight: 80,
-      data: initialData,
+      data: initialDataRef.current,
       // Shared with `CMSViewer` so a block type that saves here is always a
       // block type the public post page can render.
       tools: await loadEditorTools({
@@ -79,12 +83,13 @@ export function useEditorJs({ initialData, onUploadError }: UseEditorJsOptions) 
             return { success: 1, file: { url } };
           },
         },
+        aiAssist: true,
       }),
       onReady: () => {
         editorRef.current = editor;
       },
     });
-  }, [initialData, reportUploadErrors]);
+  }, [reportUploadErrors]);
 
   useEffect(() => {
     if (!isMounted) return;

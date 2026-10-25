@@ -12,6 +12,8 @@ type Uploader = {
 type EditorToolOptions = {
   /** Editor-only - the viewer just renders the URL already in the block. */
   imageUploader?: Uploader;
+  /** Editor-only - the AI assist block is never saved, so no post contains one. */
+  aiAssist?: boolean;
 };
 
 /**
@@ -29,15 +31,17 @@ type EditorToolOptions = {
  * the public `/blog/[slug]` route, behind the same lazy load as Editor.js
  * itself. (Not for SSR safety - they guard their `document` access.)
  */
-export async function loadEditorTools({
-  imageUploader,
-}: EditorToolOptions = {}): Promise<EditorConfig['tools']> {
-  const [Header, Paragraph, CodeTool, List, ImageTool] = await Promise.all([
+export async function loadEditorTools({ imageUploader, aiAssist }: EditorToolOptions = {}): Promise<
+  EditorConfig['tools']
+> {
+  const [Header, Paragraph, CodeTool, List, ImageTool, AIAssistTool] = await Promise.all([
     import('@editorjs/header').then((m) => m.default),
     import('@editorjs/paragraph').then((m) => m.default),
     import('@lib/editor-code-tool').then((m) => m.default),
     import('@editorjs/list').then((m) => m.default),
     import('@editorjs/image').then((m) => m.default),
+    // adjust Ai tool editor lazy import based on component demand
+    aiAssist ? import('@lib/editor-ai-tool').then((m) => m.default) : undefined,
   ]);
 
   return {
@@ -58,6 +62,11 @@ export async function loadEditorTools({
         types: IMAGE_CONTENT_TYPES.join(','),
         ...(imageUploader ? { uploader: imageUploader } : {}),
       },
-    }
+    },
+    ...(AIAssistTool
+      ? {
+          aiAssist: AIAssistTool as unknown as ToolConstructable,
+        }
+      : {}),
   };
 }

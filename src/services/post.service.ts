@@ -1,10 +1,10 @@
 import { Injectable, inject } from '@lib/di/injectable';
+import { Authenticated, currentUser } from '@lib/auth/authenticated';
 import { BaseService } from './base.service';
-import { AuthService } from './auth.service';
 import { PostRepository } from '@repositories/post.repository';
 import { TagRepository } from '@repositories/tag.repository';
 import { UserRepository } from '@repositories/user.repository';
-import { CreatePostDto, UpdatePostDto, UpsertPostDto } from '@dtos/post.dto';
+import type { CreatePostDto, UpdatePostDto, UpsertPostDto } from '@dtos/post.dto';
 import { deriveExcerpt } from '@lib/editor-content';
 
 /**
@@ -16,26 +16,9 @@ export class PostService extends BaseService {
   constructor(
     @inject(PostRepository) private postRepository: PostRepository,
     @inject(TagRepository) private tagRepository: TagRepository,
-    @inject(AuthService) private authService: AuthService,
     @inject(UserRepository) private userRepository: UserRepository,
   ) {
     super();
-  }
-
-  /**
-   * Every write below, and every read that can see drafts, goes through this.
-   *
-   * Server Actions are public HTTP endpoints: the request posts to whatever
-   * route the caller is on, so `middleware.ts` - which authorises by pathname -
-   * is not a boundary for them. An action invoked from a public page reaches
-   * this service with no session. Authorisation therefore lives here, next to
-   * the data, and the author id comes from the session rather than from an
-   * argument a caller could set.
-   */
-  private async requireAuthorId(): Promise<string> {
-    const user = await this.authService.getCurrentUser();
-    if (!user) this.unauthorized();
-    return user.id;
   }
 
   /**
@@ -92,9 +75,8 @@ export class PostService extends BaseService {
    * Every post including drafts - the admin list. Requires a session, because
    * unpublished content is not public.
    */
+  @Authenticated()
   async getAllPosts(options?: { includeContent?: boolean }) {
-    await this.requireAuthorId();
-
     return this.postRepository.findAll({
       includeContent: options?.includeContent ?? false,
     });
@@ -104,16 +86,14 @@ export class PostService extends BaseService {
    * Unpublished posts, last edited first - the admin drafts list. Requires a
    * session; the cards render from `excerpt`, the editor loads content by id.
    */
+  @Authenticated()
   async getDraftPosts() {
-    await this.requireAuthorId();
-
     return this.postRepository.findAll({ published: false, includeContent: false });
   }
 
   /** A post by slug, drafts included. Requires a session. */
+  @Authenticated()
   async getPostBySlug(slug: string) {
-    await this.requireAuthorId();
-
     const post = await this.postRepository.findBySlug(slug);
 
     if (!post) {
@@ -124,9 +104,8 @@ export class PostService extends BaseService {
   }
 
   /** A post by id, drafts included. Requires a session. */
+  @Authenticated()
   async getPostById(id: string) {
-    await this.requireAuthorId();
-
     const post = await this.postRepository.findById(id);
 
     if (!post) {
@@ -142,8 +121,10 @@ export class PostService extends BaseService {
    * Create a new post
    * Validates slug uniqueness before creating
    */
+  @Authenticated()
   async createPost(data: CreatePostDto) {
-    const authorId = await this.requireAuthorId();
+    // From the session, never from an argument a caller could set.
+    const authorId = currentUser().id;
 
     if (await this.postRepository.slugExists(data.slug)) {
       this.conflict('A post with this slug already exists');
@@ -164,9 +145,8 @@ export class PostService extends BaseService {
    * Update an existing post
    * Validates slug uniqueness if slug is being updated
    */
+  @Authenticated()
   async updatePost(id: string, data: Partial<UpdatePostDto>) {
-    await this.requireAuthorId();
-
     const existing = await this.postRepository.findById(id);
     if (!existing) {
       this.notFound('Post', id);
@@ -220,9 +200,8 @@ export class PostService extends BaseService {
   /**
    * Delete a post
    */
+  @Authenticated()
   async deletePost(id: string) {
-    await this.requireAuthorId();
-
     return this.postRepository.delete(id);
   }
 }
