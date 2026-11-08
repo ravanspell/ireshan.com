@@ -119,7 +119,7 @@ export default function BlogEditor({
           value={slug}
           onChange={onSlugChange}
           placeholder="post-slug"
-          inputClassName="font-mono text-sm"
+          inputClassName="font-mono text-base sm:text-sm"
         />
 
         <div className="space-y-2">

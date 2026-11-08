@@ -56,7 +56,7 @@ export default function EditorToolbar({
           {isPreview && <span className="text-muted-foreground font-normal"> · Preview</span>}
         </h1>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <Button variant="ghost" disabled={isPending} onClick={onTogglePreview}>
             {isPreview ? 'Back to editing' : 'Preview'}
           </Button>

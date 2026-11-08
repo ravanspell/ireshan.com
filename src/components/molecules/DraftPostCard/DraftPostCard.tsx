@@ -26,7 +26,7 @@ const DraftPostCard = (props: DraftPostCardProps) => {
           <Typography
             variant="h2"
             as="h2"
-            className="text-lg font-semibold"
+            className="min-w-0 text-lg font-semibold wrap-break-word"
             text={post.title || 'Untitled draft'}
           />
 

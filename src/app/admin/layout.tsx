@@ -29,12 +29,10 @@ export default async function DashboardLayout({ children }: { children: React.Re
   return (
     <SidebarProvider defaultOpen={defaultOpen}>
       <AdminSidebar variant="inset" user={user} />
-      <SidebarInset className="md:peer-data-[variant=inset]:border">
+      <SidebarInset className="min-w-0 md:peer-data-[variant=inset]:border">
         <AdminSiteHeader />
         <main className="flex flex-1 flex-col p-4 lg:p-6">
-          <div className="mx-auto w-full max-w-7xl">
-            {children}
-          </div>
+          <div className="mx-auto w-full max-w-7xl">{children}</div>
         </main>
       </SidebarInset>
     </SidebarProvider>
