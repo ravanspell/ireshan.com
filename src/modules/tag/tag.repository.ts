@@ -1,4 +1,3 @@
-import { Injectable, inject } from '@lib/di/injectable';
 import { Db } from '@lib/db';
 import { BaseRepository } from '@lib/core/base.repository';
 import { toTag } from './tag.model';
@@ -9,9 +8,8 @@ import { slugify } from '@lib/slug';
  * Tag Repository
  * Handles data access for Tag entities
  */
-@Injectable()
 export class TagRepository extends BaseRepository {
-  constructor(@inject(Db) private db: Db) {
+  constructor(private db: Db) {
     super();
   }
 

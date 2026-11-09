@@ -1,6 +1,5 @@
 import { createHash } from 'node:crypto';
 
-import { Injectable, inject } from '@lib/di/injectable';
 import { BaseService, TooManyRequestsError } from '@lib/core/base.service';
 import { RateLimitRepository } from './rate-limit.repository';
 import { RATE_LIMIT_PRUNE_AFTER_SECONDS } from '@lib/constants/rate-limits';
@@ -16,9 +15,8 @@ export interface RateLimitRule {
 }
 
 /** Fixed-window limiter. Fails closed: if the counter is unreachable, the request is refused. */
-@Injectable()
 export class RateLimitService extends BaseService {
-  constructor(@inject(RateLimitRepository) private rateLimits: RateLimitRepository) {
+  constructor(private rateLimits: RateLimitRepository) {
     super();
   }
 

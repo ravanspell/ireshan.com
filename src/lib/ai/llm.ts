@@ -1,9 +1,6 @@
-import 'reflect-metadata';
 import 'server-only';
 
 import OpenAI from 'openai';
-
-import { Injectable, Scope } from '@lib/di/injectable';
 
 /**
  * Gemini's OpenAI-compatible endpoint. The OpenAI SDK talks to it unchanged -
@@ -19,15 +16,14 @@ export interface LlmMessage {
 }
 
 /**
- * The LLM client, as an infrastructure adapter beside `Db`.
+ * LLM client.
  *
- * A singleton because it holds nothing per-request: the SDK client is just a
- * configured HTTP client. Built lazily on first use rather than in the
- * constructor, so a missing `GEMINI_API_KEY` fails the AI request that needs
- * it instead of every `resolve()` - the build bootstraps the container to
- * prerender `/blog`, which has nothing to do with AI.
+ * - Sends a conversation to the model and returns the reply text.
+ * - Uses Gemini's OpenAI-compatible endpoint via the OpenAI SDK.
+ * - Configured by `LLM_API_KEY` and `LLM_MODEL`.
+ * - Creates the SDK client on first use and reuses it.
+ * - One shared instance, built in `@lib/composition`.
  */
-@Injectable({ scope: Scope.Singleton })
 export class Llm {
   private client: OpenAI | null = null;
 

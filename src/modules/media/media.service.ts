@@ -1,5 +1,4 @@
 import { randomUUID } from 'crypto';
-import { Injectable } from '@lib/di/injectable';
 import { Authenticated } from '@lib/auth/authenticated';
 import { BaseService } from '@lib/core/base.service';
 import { createClient } from '@lib/supabase/server';
@@ -17,14 +16,10 @@ export interface SignedUpload {
  * Media Service
  * Issues signed upload URLs for post images.
  *
- * No repository: like `AuthService`, it talks to Supabase (Storage) directly
- * rather than to Prisma.
- *
- * Uploads go browser → Storage with a one-time token instead of through a
+ * Uploads go browser -> Storage with a one-time token instead of through a
  * Server Action, because action bodies are capped at 1 MB by default (and
  * Vercel functions at ~4.5 MB) - smaller than the image cap in `checkMedia`.
  */
-@Injectable()
 export class MediaService extends BaseService {
   @Authenticated()
   async createSignedUpload(data: CreateUploadUrlDto): Promise<SignedUpload> {

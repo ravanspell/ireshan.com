@@ -1,7 +1,6 @@
 'use server';
 
-import { resolve } from '@/lib/di/container';
-import { AiWritingController } from '@modules/ai-writing/ai-writing.controller';
+import { aiWritingController } from '@lib/composition';
 import type { GenerateParagraphDto } from '@modules/ai-writing/ai-writing.dto';
 
 /**
@@ -11,7 +10,5 @@ import type { GenerateParagraphDto } from '@modules/ai-writing/ai-writing.dto';
  * authentication.
  */
 export async function generateParagraphAction(input: GenerateParagraphDto) {
-  const aiWritingController = resolve(AiWritingController);
-
   return aiWritingController.generateParagraph(input);
 }

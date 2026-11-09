@@ -1,8 +1,6 @@
+import { postController, tagController } from '@lib/composition';
 import { notFound } from 'next/navigation';
 import BlogEditorTemplate from '@templates/BlogEditor/BlogEditorTemplate';
-import { resolve } from '@/lib/di/container';
-import { PostController } from '@modules/post/post.controller';
-import { TagController } from '@modules/tag/tag.controller';
 
 /**
  * Every existing tag, for the editor's autocomplete. A failure here is not
@@ -10,7 +8,7 @@ import { TagController } from '@modules/tag/tag.controller';
  * empty suggestion list only costs the author a shortcut.
  */
 async function getTagSuggestions(): Promise<string[]> {
-  const result = await resolve(TagController).getAllTags();
+  const result = await tagController.getAllTags();
 
   return result.success ? result.data.map((tag) => tag.name) : [];
 }
@@ -36,7 +34,7 @@ export default async function EditorPage({
   // Drafts included - this read requires a session, which middleware has
   // already enforced for /admin, and PostService re-checks regardless.
   const [result, tagSuggestions] = await Promise.all([
-    resolve(PostController).getPostById(id),
+    postController.getPostById(id),
     getTagSuggestions(),
   ]);
 

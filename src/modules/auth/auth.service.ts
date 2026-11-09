@@ -1,4 +1,3 @@
-import { Injectable, inject } from '@lib/di/injectable';
 import { BaseService } from '@lib/core/base.service';
 import { RateLimitService } from '@modules/rate-limit/rate-limit.service';
 import { createClient } from '@lib/supabase/server';
@@ -29,9 +28,8 @@ export class AuthError extends Error {
  * A fresh Supabase server client is created per call since it reads
  * the current request's cookies() - it cannot be cached on the instance.
  */
-@Injectable()
 export class AuthService extends BaseService {
-  constructor(@inject(RateLimitService) private rateLimit: RateLimitService) {
+  constructor(private rateLimit: RateLimitService) {
     super();
   }
 

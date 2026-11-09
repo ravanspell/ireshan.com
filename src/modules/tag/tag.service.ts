@@ -1,4 +1,3 @@
-import { Injectable, inject } from '@lib/di/injectable';
 import { Authenticated } from '@lib/auth/authenticated';
 import { BaseService } from '@lib/core/base.service';
 import { TagRepository } from './tag.repository';
@@ -8,9 +7,8 @@ import type { CreateTagDto, UpdateTagDto } from './tag.dto';
  * Tag Service
  * Contains business logic for tag operations
  */
-@Injectable()
 export class TagService extends BaseService {
-  constructor(@inject(TagRepository) private tagRepository: TagRepository) {
+  constructor(private tagRepository: TagRepository) {
     super();
   }
 

@@ -1,4 +1,3 @@
-import { Injectable, inject } from '@lib/di/injectable';
 import { Authenticated, currentUser } from '@lib/auth/authenticated';
 import { BaseService } from '@lib/core/base.service';
 import { PostRepository } from './post.repository';
@@ -13,12 +12,11 @@ import { deriveExcerpt } from '@lib/editor-content';
  *
  * Other modules are reached through their services, never their repositories.
  */
-@Injectable()
 export class PostService extends BaseService {
   constructor(
-    @inject(PostRepository) private postRepository: PostRepository,
-    @inject(TagService) private tagService: TagService,
-    @inject(UserService) private userService: UserService,
+    private postRepository: PostRepository,
+    private tagService: TagService,
+    private userService: UserService,
   ) {
     super();
   }

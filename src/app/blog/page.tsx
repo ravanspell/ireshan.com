@@ -1,5 +1,4 @@
-import { resolve } from '@/lib/di/container';
-import { PostController } from '@modules/post/post.controller';
+import { postController } from '@lib/composition';
 import BlogIndex from '@templates/BlogIndex/BlogIndex';
 
 /**
@@ -17,7 +16,7 @@ export const metadata = {
 };
 
 export default async function BlogIndexPage() {
-  const result = await resolve(PostController).getPublishedPosts();
+  const result = await postController.getPublishedPosts();
 
   if (!result.success) {
     // Deliberately fatal: the index takes no user input, so the only failure

@@ -1,8 +1,3 @@
-// Imported by every service through this base class, which guarantees the
-// decorator-metadata polyfill is installed before any `@injectable()` class
-// below it is defined, regardless of which module happened to be the entry point.
-import 'reflect-metadata';
-
 import { BadRequestError, ConflictError, NotFoundError, UnauthorizedError } from '@lib/errors';
 
 // Re-exported so services can keep importing them from their base class.

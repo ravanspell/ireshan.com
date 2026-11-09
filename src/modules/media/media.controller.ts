@@ -1,4 +1,3 @@
-import { Injectable, inject } from '@lib/di/injectable';
 import { BaseController, type ControllerResult } from '@lib/core/base.controller';
 import { MediaService, type SignedUpload } from './media.service';
 import { createUploadUrlSchema } from './media.dto';
@@ -7,9 +6,8 @@ import { createUploadUrlSchema } from './media.dto';
  * Media Controller
  * Handles Server Actions for post media uploads
  */
-@Injectable()
 export class MediaController extends BaseController {
-  constructor(@inject(MediaService) private mediaService: MediaService) {
+  constructor(private mediaService: MediaService) {
     super();
   }
 

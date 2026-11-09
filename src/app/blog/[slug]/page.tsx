@@ -1,8 +1,7 @@
+import { postController } from '@lib/composition';
 import { cache } from 'react';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
-import { resolve } from '@/lib/di/container';
-import { PostController } from '@modules/post/post.controller';
 import { formatDate } from '@lib/date';
 import CMSViewer from '@molecules/CMSViewer/CMSViewer';
 import Tag from '@/components/atoms/Tag/Tag';
@@ -47,7 +46,7 @@ const WITH_TOC = {
  * identical queries. `cache()` memoises for one render pass only - it is not a
  * cross-request cache, so a revalidation still sees fresh data.
  */
-const getPost = cache((slug: string) => resolve(PostController).getPublishedPostBySlug(slug));
+const getPost = cache((slug: string) => postController.getPublishedPostBySlug(slug));
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;

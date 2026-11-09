@@ -1,4 +1,3 @@
-import { Injectable, inject } from '@lib/di/injectable';
 import { BaseController } from '@lib/core/base.controller';
 import { AuthService } from './auth.service';
 import { LoginFormData } from './auth.dto';
@@ -7,9 +6,8 @@ import { LoginFormData } from './auth.dto';
  * Auth Controller
  * Handles Server Actions for authentication
  */
-@Injectable()
 export class AuthController extends BaseController {
-  constructor(@inject(AuthService) private authService: AuthService) {
+  constructor(private authService: AuthService) {
     super();
   }
 

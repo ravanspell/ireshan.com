@@ -1,4 +1,3 @@
-import { Injectable, inject } from '@lib/di/injectable';
 import { Db } from '@lib/db';
 import { BaseRepository } from '@lib/core/base.repository';
 import { toPost } from './post.model';
@@ -28,9 +27,8 @@ type UpdatePostData = Partial<Omit<UpdatePostDto, 'id' | 'tagNames'>> & {
   tagIds?: string[];
 };
 
-@Injectable()
 export class PostRepository extends BaseRepository {
-  constructor(@inject(Db) private db: Db) {
+  constructor(private db: Db) {
     super();
   }
 

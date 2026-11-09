@@ -1,4 +1,3 @@
-import { Injectable, inject } from '@lib/di/injectable';
 import { BaseController, type ControllerResult } from '@lib/core/base.controller';
 import { AiWritingService } from './ai-writing.service';
 import { generateParagraphSchema } from './ai-writing.dto';
@@ -7,9 +6,8 @@ import { generateParagraphSchema } from './ai-writing.dto';
  * AI Writing Controller
  * Handles Server Actions for the editor's writing assistant
  */
-@Injectable()
 export class AiWritingController extends BaseController {
-  constructor(@inject(AiWritingService) private aiWritingService: AiWritingService) {
+  constructor(private aiWritingService: AiWritingService) {
     super();
   }
 

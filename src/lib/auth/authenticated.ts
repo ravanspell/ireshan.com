@@ -10,7 +10,7 @@ let sessionCheck: SessionCheck | undefined;
 /** The user an `@Authenticated()` call is running as, scoped to that call. */
 const userContext = new AsyncLocalStorage<User>();
 
-/** Called once by `registry.ts`, so services needn't inject `AuthService` for the gate. */
+/** Called once by `@lib/composition`, so services needn't inject `AuthService` for the gate. */
 export function installSessionCheck(check: SessionCheck): void {
   sessionCheck = check;
 }
@@ -45,7 +45,7 @@ export function Authenticated() {
       if (!sessionCheck) {
         throw new Error(
           `[auth] ${String(key)} ran before the session check was installed - ` +
-            `resolve services through "@lib/di/container".`,
+            `reach services through the controllers exported by "@lib/composition".`,
         );
       }
       // get the session information

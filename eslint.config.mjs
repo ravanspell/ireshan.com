@@ -33,15 +33,27 @@ const eslintConfig = [...compat.extends("next/core-web-vitals", "next/typescript
           message: "Repositories are private to their module. Call the owning module's service instead.",
         },
         {
+          // Controllers are constructed once, in the composition root. Anywhere
+          // else, use the wired instance it exports (types are fine).
+          group: ["@modules/*/*.controller"],
+          allowTypeImports: true,
+          message: "Import the wired controller instance from @lib/composition instead.",
+        },
+        {
           group: ["@controllers/*", "@services/*", "@repositories/*", "@dtos/*", "@models/*"],
           message: "Layer folders were replaced by src/modules/<domain>/. Import from @modules/<domain>/<file>.",
         },
       ],
+      paths: [
+        { name: "tsyringe", message: "The DI container was removed. Wire dependencies by hand in src/lib/composition.ts." },
+        { name: "reflect-metadata", message: "Not needed: there is no DI container (see src/lib/composition.ts)." },
+      ],
     }],
   },
 }, {
-  // The composition root is the one place allowed to see every repository.
-  files: ["src/lib/di/registry.ts"],
+  // The composition root is the one place allowed to see every repository and
+  // construct every controller.
+  files: ["src/lib/composition.ts"],
   rules: { "no-restricted-imports": "off" },
 }];
 

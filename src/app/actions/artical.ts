@@ -1,7 +1,6 @@
 'use server';
 
-import { resolve } from '@/lib/di/container';
-import { PostController } from '@modules/post/post.controller';
+import { postController } from '@lib/composition';
 
 /**
  * Server Action: Save Article
@@ -22,8 +21,6 @@ export async function saveArticleAction(input: {
   /** Names, not ids - missing tags are created as part of the save. */
   tagNames?: string[];
 }) {
-  const postController = resolve(PostController);
-
   return postController.upsertPost(input);
 }
 
@@ -35,7 +32,5 @@ export async function saveArticleAction(input: {
  * does for `saveArticleAction`. Hiding the button is tidiness, not a control.
  */
 export async function unpublishPostAction(id: string) {
-  const postController = resolve(PostController);
-
   return postController.unpublishPost(id);
 }

@@ -1,4 +1,3 @@
-import { Injectable, inject } from '@lib/di/injectable';
 import { Llm, type LlmMessage } from '@lib/ai/llm';
 import type { GenerateParagraphDto } from './ai-writing.dto';
 import { Authenticated } from '@lib/auth/authenticated';
@@ -18,9 +17,8 @@ eparate paragraphs with a blank line.`;
  * No repository: like `MediaService`, it talks to an external API rather than
  * to Prisma.
  */
-@Injectable()
 export class AiWritingService extends BaseService {
-  constructor(@inject(Llm) private llm: Llm) {
+  constructor(private llm: Llm) {
     super();
   }
 

@@ -1,4 +1,3 @@
-import { Injectable, inject } from '@lib/di/injectable';
 import { BaseController } from '@lib/core/base.controller';
 import { PostService } from './post.service';
 import {
@@ -14,9 +13,8 @@ import { ROUTES } from '@lib/constants/routes';
  * Post Controller
  * Handles Server Actions for post operations
  */
-@Injectable()
 export class PostController extends BaseController {
-  constructor(@inject(PostService) private postService: PostService) {
+  constructor(private postService: PostService) {
     super();
   }
 

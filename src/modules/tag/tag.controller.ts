@@ -1,4 +1,3 @@
-import { Injectable, inject } from '@lib/di/injectable';
 import { BaseController } from '@lib/core/base.controller';
 import { TagService } from './tag.service';
 import { createTagSchema, updateTagSchema } from './tag.dto';
@@ -8,9 +7,8 @@ import { revalidatePath } from 'next/cache';
  * Tag Controller
  * Handles Server Actions for tag operations
  */
-@Injectable()
 export class TagController extends BaseController {
-  constructor(@inject(TagService) private tagService: TagService) {
+  constructor(private tagService: TagService) {
     super();
   }
 

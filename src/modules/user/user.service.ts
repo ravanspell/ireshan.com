@@ -1,4 +1,3 @@
-import { Injectable, inject } from '@lib/di/injectable';
 import { BaseService } from '@lib/core/base.service';
 import { UserRepository } from './user.repository';
 
@@ -7,9 +6,8 @@ import { UserRepository } from './user.repository';
  * The user module's public entry point for other modules. Users live in
  * Supabase Auth, so this is read-only: profile lookups for display.
  */
-@Injectable()
 export class UserService extends BaseService {
-  constructor(@inject(UserRepository) private userRepository: UserRepository) {
+  constructor(private userRepository: UserRepository) {
     super();
   }
 

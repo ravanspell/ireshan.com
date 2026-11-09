@@ -1,4 +1,3 @@
-import { Injectable, inject } from '@lib/di/injectable';
 import { Db } from '@lib/db';
 import { BaseRepository } from '@lib/core/base.repository';
 import { toUser, type UserRow } from './user.model';
@@ -13,9 +12,8 @@ import { toUser, type UserRow } from './user.model';
  * `migrate diff` against the live database would propose dropping the ones we
  * don't model. Read-only - Supabase Auth remains the only writer.
  */
-@Injectable()
 export class UserRepository extends BaseRepository {
-  constructor(@inject(Db) private db: Db) {
+  constructor(private db: Db) {
     super();
   }
 
