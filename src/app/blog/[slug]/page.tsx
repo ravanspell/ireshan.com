@@ -2,7 +2,7 @@ import { cache } from 'react';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { resolve } from '@/lib/di/container';
-import { PostController } from '@controllers/post.controller';
+import { PostController } from '@modules/post/post.controller';
 import { formatDate } from '@lib/date';
 import CMSViewer from '@molecules/CMSViewer/CMSViewer';
 import Tag from '@/components/atoms/Tag/Tag';

@@ -1,8 +1,8 @@
 import { Injectable, inject } from '@lib/di/injectable';
 import { Authenticated } from '@lib/auth/authenticated';
-import { BaseService } from './base.service';
-import { TagRepository } from '@repositories/tag.repository';
-import type { CreateTagDto, UpdateTagDto } from '@dtos/tag.dto';
+import { BaseService } from '@lib/core/base.service';
+import { TagRepository } from './tag.repository';
+import type { CreateTagDto, UpdateTagDto } from './tag.dto';
 
 /**
  * Tag Service
@@ -66,6 +66,19 @@ export class TagService extends BaseService {
    */
   async getAllTags() {
     return this.tagRepository.findAll();
+  }
+
+  /**
+   * Resolve tag names to tags, creating the ones that don't exist yet - what
+   * the post module calls when an author saves a post with free-text tags.
+   * Creates rows, so it requires a session; a decorated caller's session is
+   * reused rather than looked up again.
+   */
+  @Authenticated()
+  async findOrCreateByNames(names: string[]) {
+    if (names.length === 0) return [];
+
+    return this.tagRepository.findOrCreateManyByName(names);
   }
 
   /**

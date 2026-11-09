@@ -1,4 +1,4 @@
-import type { EditorContent } from '@dtos/post.dto';
+import type { EditorContent } from '@modules/post/post.dto';
 import { slugify } from '@lib/slug';
 
 export interface Heading {

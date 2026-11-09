@@ -3,7 +3,7 @@ import LinkButton from '@atoms/LinkButton/LinkButton';
 import Typography from '@atoms/Typography/Typography';
 import DraftPostCard from '@molecules/DraftPostCard/DraftPostCard';
 import { ROUTES } from '@lib/constants/routes';
-import type { Post } from '@models/post.model';
+import type { Post } from '@modules/post/post.model';
 
 export interface DraftPostListProps {
   /** Unpublished posts, already ordered by the repository (last edited first). */

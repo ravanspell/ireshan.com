@@ -1,5 +1,5 @@
 import { resolve } from '@/lib/di/container';
-import { PostController } from '@controllers/post.controller';
+import { PostController } from '@modules/post/post.controller';
 import BlogIndex from '@templates/BlogIndex/BlogIndex';
 
 /**

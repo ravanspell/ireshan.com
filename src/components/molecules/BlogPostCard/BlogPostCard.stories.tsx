@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
 
 import BlogPostCard from './BlogPostCard';
-import type { Post } from '@models/post.model';
+import type { Post } from '@modules/post/post.model';
 
 const basePost: Post = {
   id: '6d1f3c2a-6e1b-4f8a-9d55-0c2b7a1e4f90',

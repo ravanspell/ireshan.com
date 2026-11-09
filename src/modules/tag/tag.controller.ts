@@ -1,8 +1,8 @@
-import { Injectable, inject } from "@lib/di/injectable";
-import { BaseController } from "./base.controller";
-import { TagService } from "@services/tag.service";
-import { createTagSchema, updateTagSchema } from "@dtos/tag.dto";
-import { revalidatePath } from "next/cache";
+import { Injectable, inject } from '@lib/di/injectable';
+import { BaseController } from '@lib/core/base.controller';
+import { TagService } from './tag.service';
+import { createTagSchema, updateTagSchema } from './tag.dto';
+import { revalidatePath } from 'next/cache';
 
 /**
  * Tag Controller
@@ -21,8 +21,8 @@ export class TagController extends BaseController {
   async createTag(formData: FormData) {
     try {
       const data = {
-        name: formData.get("name") as string,
-        slug: formData.get("slug") as string,
+        name: formData.get('name') as string,
+        slug: formData.get('slug') as string,
       };
 
       // Validate with Zod
@@ -32,11 +32,11 @@ export class TagController extends BaseController {
       const tag = await this.tagService.createTag(validated);
 
       // Revalidate cache
-      revalidatePath("/admin/tags");
+      revalidatePath('/admin/tags');
 
       return { success: true as const, data: tag };
     } catch (error) {
-      return this.handleError(error, "Failed to create tag");
+      return this.handleError(error, 'Failed to create tag');
     }
   }
 
@@ -47,9 +47,9 @@ export class TagController extends BaseController {
   async updateTag(formData: FormData) {
     try {
       const data = {
-        id: formData.get("id") as string,
-        name: formData.get("name") as string,
-        slug: formData.get("slug") as string,
+        id: formData.get('id') as string,
+        name: formData.get('name') as string,
+        slug: formData.get('slug') as string,
       };
 
       // Validate with Zod
@@ -59,11 +59,11 @@ export class TagController extends BaseController {
       const tag = await this.tagService.updateTag(validated.id, validated);
 
       // Revalidate cache
-      revalidatePath("/admin/tags");
+      revalidatePath('/admin/tags');
 
       return { success: true as const, data: tag };
     } catch (error) {
-      return this.handleError(error, "Failed to update tag");
+      return this.handleError(error, 'Failed to update tag');
     }
   }
 
@@ -75,7 +75,7 @@ export class TagController extends BaseController {
       const tag = await this.tagService.getTagBySlug(slug);
       return { success: true as const, data: tag };
     } catch (error) {
-      return this.handleError(error, "Tag not found");
+      return this.handleError(error, 'Tag not found');
     }
   }
 
@@ -87,26 +87,26 @@ export class TagController extends BaseController {
       const tags = await this.tagService.getAllTags();
       return { success: true as const, data: tags };
     } catch (error) {
-      return this.handleError(error, "Failed to fetch tags");
+      return this.handleError(error, 'Failed to fetch tags');
     }
   }
 
   /**
    * delete blog post tags
-   * 
+   *
    * @param id tag id
-   * @returns 
+   * @returns
    */
   async deleteTag(id: string) {
     try {
       await this.tagService.deleteTag(id);
 
       // Revalidate cache
-      revalidatePath("/admin/tags");
+      revalidatePath('/admin/tags');
 
       return { success: true as const, data: undefined };
     } catch (error) {
-      return this.handleError(error, "Failed to delete tag");
+      return this.handleError(error, 'Failed to delete tag');
     }
   }
 }

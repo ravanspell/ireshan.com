@@ -1,8 +1,8 @@
 import { Injectable, inject } from '@lib/di/injectable';
-import { BaseService } from './base.service';
-import { RateLimitService } from './rate-limit.service';
+import { BaseService } from '@lib/core/base.service';
+import { RateLimitService } from '@modules/rate-limit/rate-limit.service';
 import { createClient } from '@lib/supabase/server';
-import { loginSchema, LoginFormData } from '@dtos/auth.dto';
+import { loginSchema, LoginFormData } from './auth.dto';
 import { isSignedOutError } from '@lib/auth/session-errors';
 import { isSessionPastMaxAge } from '@lib/supabase/session-policy';
 import { getClientIp } from '@lib/request/client-ip';

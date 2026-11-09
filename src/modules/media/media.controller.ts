@@ -1,7 +1,7 @@
-import { Injectable, inject } from "@lib/di/injectable";
-import { BaseController, type ControllerResult } from "./base.controller";
-import { MediaService, type SignedUpload } from "@services/media.service";
-import { createUploadUrlSchema } from "@dtos/media.dto";
+import { Injectable, inject } from '@lib/di/injectable';
+import { BaseController, type ControllerResult } from '@lib/core/base.controller';
+import { MediaService, type SignedUpload } from './media.service';
+import { createUploadUrlSchema } from './media.dto';
 
 /**
  * Media Controller
@@ -25,7 +25,7 @@ export class MediaController extends BaseController {
 
       return { success: true as const, data: upload };
     } catch (error) {
-      return this.handleError(error, "Failed to prepare upload");
+      return this.handleError(error, 'Failed to prepare upload');
     }
   }
 }

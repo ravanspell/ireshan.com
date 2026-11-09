@@ -1,8 +1,8 @@
 import { notFound } from 'next/navigation';
 import BlogEditorTemplate from '@templates/BlogEditor/BlogEditorTemplate';
 import { resolve } from '@/lib/di/container';
-import { PostController } from '@controllers/post.controller';
-import { TagController } from '@controllers/tag.controller';
+import { PostController } from '@modules/post/post.controller';
+import { TagController } from '@modules/tag/tag.controller';
 
 /**
  * Every existing tag, for the editor's autocomplete. A failure here is not

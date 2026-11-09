@@ -2,8 +2,8 @@
 
 import { redirect } from 'next/navigation';
 import { resolve } from '@/lib/di/container';
-import { AuthController } from '@controllers/auth.controller';
-import { LoginFormData } from '@dtos/auth.dto';
+import { AuthController } from '@modules/auth/auth.controller';
+import { LoginFormData } from '@modules/auth/auth.dto';
 import { ROUTES } from '@/lib/constants/routes';
 import { resolveNextPath } from '@/lib/auth/redirect';
 

@@ -5,7 +5,7 @@ import Typography from '@atoms/Typography/Typography';
 import TagListContainer from '@molecules/TagListContainer/TagLIstContainer';
 import { ROUTES } from '@lib/constants/routes';
 import { formatDateTime } from '@lib/date';
-import type { Post } from '@models/post.model';
+import type { Post } from '@modules/post/post.model';
 
 export interface DraftPostCardProps {
   /** An unpublished post. Rendered from `excerpt` - the drafts query skips `content`. */

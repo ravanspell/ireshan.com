@@ -1,9 +1,9 @@
 import { randomUUID } from 'crypto';
 import { Injectable } from '@lib/di/injectable';
 import { Authenticated } from '@lib/auth/authenticated';
-import { BaseService } from './base.service';
+import { BaseService } from '@lib/core/base.service';
 import { createClient } from '@lib/supabase/server';
-import type { CreateUploadUrlDto } from '@dtos/media.dto';
+import type { CreateUploadUrlDto } from './media.dto';
 import { MEDIA_BUCKET, checkMedia } from '@lib/constants/media';
 
 /** What the browser needs to upload straight to Supabase Storage. */

@@ -11,23 +11,24 @@ import { installSessionCheck } from '@lib/auth/authenticated';
 import { Db, db } from '@lib/db';
 import { Llm } from '@lib/ai/llm';
 
-import { PostRepository } from '@repositories/post.repository';
-import { RateLimitRepository } from '@repositories/rate-limit.repository';
-import { TagRepository } from '@repositories/tag.repository';
-import { UserRepository } from '@repositories/user.repository';
+import { PostRepository } from '@modules/post/post.repository';
+import { RateLimitRepository } from '@modules/rate-limit/rate-limit.repository';
+import { TagRepository } from '@modules/tag/tag.repository';
+import { UserRepository } from '@modules/user/user.repository';
 
-import { AiWritingService } from '@services/ai-writing.service';
-import { AuthService } from '@services/auth.service';
-import { MediaService } from '@services/media.service';
-import { PostService } from '@services/post.service';
-import { RateLimitService } from '@services/rate-limit.service';
-import { TagService } from '@services/tag.service';
+import { AiWritingService } from '@modules/ai-writing/ai-writing.service';
+import { AuthService } from '@modules/auth/auth.service';
+import { MediaService } from '@modules/media/media.service';
+import { PostService } from '@modules/post/post.service';
+import { RateLimitService } from '@modules/rate-limit/rate-limit.service';
+import { TagService } from '@modules/tag/tag.service';
+import { UserService } from '@modules/user/user.service';
 
-import { AiWritingController } from '@controllers/ai-writing.controller';
-import { AuthController } from '@controllers/auth.controller';
-import { MediaController } from '@controllers/media.controller';
-import { PostController } from '@controllers/post.controller';
-import { TagController } from '@controllers/tag.controller';
+import { AiWritingController } from '@modules/ai-writing/ai-writing.controller';
+import { AuthController } from '@modules/auth/auth.controller';
+import { MediaController } from '@modules/media/media.controller';
+import { PostController } from '@modules/post/post.controller';
+import { TagController } from '@modules/tag/tag.controller';
 
 /**
  * Every class the container can hand out.
@@ -54,6 +55,7 @@ const PROVIDERS: Constructor<unknown>[] = [
   PostService,
   RateLimitService,
   TagService,
+  UserService,
   // Controllers
   AiWritingController,
   AuthController,

@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 import AdminDraftsTemplate from '@templates/AdminDrafts/AdminDraftsTemplate';
 import { resolve } from '@/lib/di/container';
-import { PostController } from '@controllers/post.controller';
+import { PostController } from '@modules/post/post.controller';
 import { ROUTES } from '@lib/constants/routes';
 
 export const metadata = {

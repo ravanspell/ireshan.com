@@ -1,6 +1,6 @@
 import BlogPostCard from '@molecules/BlogPostCard/BlogPostCard';
 import Typography from '@atoms/Typography/Typography';
-import type { Post } from '@models/post.model';
+import type { Post } from '@modules/post/post.model';
 
 export interface BlogPostListProps {
   /** Published posts, already ordered by the repository. */

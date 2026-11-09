@@ -1,22 +1,24 @@
 import { Injectable, inject } from '@lib/di/injectable';
 import { Authenticated, currentUser } from '@lib/auth/authenticated';
-import { BaseService } from './base.service';
-import { PostRepository } from '@repositories/post.repository';
-import { TagRepository } from '@repositories/tag.repository';
-import { UserRepository } from '@repositories/user.repository';
-import type { CreatePostDto, UpdatePostDto, UpsertPostDto } from '@dtos/post.dto';
+import { BaseService } from '@lib/core/base.service';
+import { PostRepository } from './post.repository';
+import { TagService } from '@modules/tag/tag.service';
+import { UserService } from '@modules/user/user.service';
+import type { CreatePostDto, UpdatePostDto, UpsertPostDto } from './post.dto';
 import { deriveExcerpt } from '@lib/editor-content';
 
 /**
  * Post Service
  * Contains business logic for post operations
+ *
+ * Other modules are reached through their services, never their repositories.
  */
 @Injectable()
 export class PostService extends BaseService {
   constructor(
     @inject(PostRepository) private postRepository: PostRepository,
-    @inject(TagRepository) private tagRepository: TagRepository,
-    @inject(UserRepository) private userRepository: UserRepository,
+    @inject(TagService) private tagService: TagService,
+    @inject(UserService) private userService: UserService,
   ) {
     super();
   }
@@ -38,7 +40,7 @@ export class PostService extends BaseService {
   private async resolveTagIds(names: string[]): Promise<string[]> {
     if (names.length === 0) return [];
 
-    const tags = await this.tagRepository.findOrCreateManyByName(names);
+    const tags = await this.tagService.findOrCreateByNames(names);
 
     return tags.map((tag) => tag.id);
   }
@@ -66,7 +68,7 @@ export class PostService extends BaseService {
 
     // A second query rather than a join: `auth.users` isn't in the Prisma
     // schema, so the post query can't include it.
-    return { ...post, author: await this.userRepository.findById(post.authorId) };
+    return { ...post, author: await this.userService.getPublicProfile(post.authorId) };
   }
 
   // ---------- Authenticated reads (drafts included) ----------

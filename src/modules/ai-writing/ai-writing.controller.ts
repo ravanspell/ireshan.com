@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@lib/di/injectable';
-import { BaseController, type ControllerResult } from './base.controller';
-import { AiWritingService } from '@services/ai-writing.service';
-import { generateParagraphSchema } from '@dtos/ai-writing.dto';
+import { BaseController, type ControllerResult } from '@lib/core/base.controller';
+import { AiWritingService } from './ai-writing.service';
+import { generateParagraphSchema } from './ai-writing.dto';
 
 /**
  * AI Writing Controller

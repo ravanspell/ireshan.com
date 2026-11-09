@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@lib/di/injectable';
 import { Db } from '@lib/db';
 import { Prisma } from '@generated/prisma/client';
-import { BaseRepository } from './base.repository';
+import { BaseRepository } from '@lib/core/base.repository';
 
 export interface RateLimitHit {
   /** Hits in the current window, including this one. */

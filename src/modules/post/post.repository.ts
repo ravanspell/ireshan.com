@@ -1,8 +1,8 @@
 import { Injectable, inject } from '@lib/di/injectable';
 import { Db } from '@lib/db';
-import { BaseRepository } from './base.repository';
-import { toPost } from '@models/post.model';
-import { CreatePostDto, UpdatePostDto } from '@dtos/post.dto';
+import { BaseRepository } from '@lib/core/base.repository';
+import { toPost } from './post.model';
+import { CreatePostDto, UpdatePostDto } from './post.dto';
 
 /**
  * Post Repository

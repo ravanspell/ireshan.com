@@ -1,7 +1,7 @@
-import { Injectable, inject } from "@lib/di/injectable";
-import { BaseController } from "./base.controller";
-import { AuthService } from "@services/auth.service";
-import { LoginFormData } from "@dtos/auth.dto";
+import { Injectable, inject } from '@lib/di/injectable';
+import { BaseController } from '@lib/core/base.controller';
+import { AuthService } from './auth.service';
+import { LoginFormData } from './auth.dto';
 
 /**
  * Auth Controller
@@ -24,7 +24,7 @@ export class AuthController extends BaseController {
       await this.authService.signIn(credentials);
       return { success: true as const, data: undefined };
     } catch (error) {
-      return this.handleError(error, "Authentication failed");
+      return this.handleError(error, 'Authentication failed');
     }
   }
 
@@ -37,7 +37,7 @@ export class AuthController extends BaseController {
       await this.authService.signOut();
       return { success: true as const, data: undefined };
     } catch (error) {
-      return this.handleError(error, "Logout failed");
+      return this.handleError(error, 'Logout failed');
     }
   }
 
@@ -50,7 +50,7 @@ export class AuthController extends BaseController {
       const user = await this.authService.getCurrentUser();
       return { success: true as const, data: user };
     } catch (error) {
-      return this.handleError(error, "Failed to get user");
+      return this.handleError(error, 'Failed to get user');
     }
   }
 

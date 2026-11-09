@@ -1,7 +1,7 @@
-"use server";
+'use server';
 
-import { resolve } from "@/lib/di/container";
-import { MediaController } from "@controllers/media.controller";
+import { resolve } from '@/lib/di/container';
+import { MediaController } from '@modules/media/media.controller';
 
 /**
  * Server Action: Create Upload URL

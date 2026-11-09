@@ -1,12 +1,12 @@
 import { Injectable, inject } from '@lib/di/injectable';
-import { BaseController } from './base.controller';
-import { PostService } from '@services/post.service';
+import { BaseController } from '@lib/core/base.controller';
+import { PostService } from './post.service';
 import {
   createPostSchema,
   unpublishPostSchema,
   updatePostSchema,
   upsertPostSchema,
-} from '@dtos/post.dto';
+} from './post.dto';
 import { revalidatePath } from 'next/cache';
 import { ROUTES } from '@lib/constants/routes';
 

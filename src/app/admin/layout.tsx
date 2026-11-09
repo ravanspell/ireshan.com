@@ -4,7 +4,7 @@ import AdminSiteHeader from '@molecules/AdminSiteHeader/AdminSiteHeader';
 import type { AdminUser } from '@molecules/AdminNavUser/AdminNavUser';
 import { SidebarInset, SidebarProvider } from '@/components/atoms/sidebar';
 import { resolve } from '@/lib/di/container';
-import { AuthController } from '@controllers/auth.controller';
+import { AuthController } from '@modules/auth/auth.controller';
 
 /** Only the fields the sidebar shows - the full Supabase user never reaches the client. */
 async function getAdminUser(): Promise<AdminUser | null> {

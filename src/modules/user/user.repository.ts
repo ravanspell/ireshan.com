@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@lib/di/injectable';
 import { Db } from '@lib/db';
-import { BaseRepository } from './base.repository';
-import { toUser, type UserRow } from '@models/user.model';
+import { BaseRepository } from '@lib/core/base.repository';
+import { toUser, type UserRow } from './user.model';
 
 /**
  * User Repository

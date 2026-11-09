@@ -1,8 +1,8 @@
 import { Injectable, inject } from '@lib/di/injectable';
 import { Llm, type LlmMessage } from '@lib/ai/llm';
-import type { GenerateParagraphDto } from '@dtos/ai-writing.dto';
+import type { GenerateParagraphDto } from './ai-writing.dto';
 import { Authenticated } from '@lib/auth/authenticated';
-import { BaseService } from './base.service';
+import { BaseService } from '@lib/core/base.service';
 
 const SYSTEM_PROMPT = `
 You are a writing assistant for a personal technical blog.
