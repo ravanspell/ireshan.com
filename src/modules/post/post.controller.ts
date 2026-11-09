@@ -2,6 +2,7 @@ import { BaseController } from '@lib/core/base.controller';
 import { PostService } from './post.service';
 import {
   createPostSchema,
+  deleteDraftSchema,
   unpublishPostSchema,
   updatePostSchema,
   upsertPostSchema,
@@ -101,6 +102,18 @@ export class PostController extends BaseController {
         // No payload - the caller needs the outcome, not the block document.
       },
     );
+  }
+
+  /**
+   * Permanently delete an unpublished post
+   * Server Action handler
+   */
+  deleteDraft(id: string) {
+    return this.runValidated(deleteDraftSchema, { id }, 'Failed to delete draft', async (data) => {
+      await this.postService.deleteDraft(data.id);
+      // Drafts aren't on the blog; only the admin lists change.
+      this.revalidate(ROUTES.ADMIN.DASHBOARD, ROUTES.ADMIN.DRAFTS);
+    });
   }
 
   /**

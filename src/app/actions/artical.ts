@@ -7,10 +7,6 @@ import { postController } from '@lib/composition';
  *
  * Creates the post on first save and updates it on every save after, so the
  * editor can keep calling one action.
- *
- * Authentication is not checked here: `PostService` enforces it at the write
- * itself, so every path into the mutation is covered rather than just this one.
- * Input is validated by `upsertPostSchema` inside the controller.
  */
 export async function saveArticleAction(input: {
   id?: string;
@@ -25,12 +21,15 @@ export async function saveArticleAction(input: {
 }
 
 /**
- * Server Action: Unpublish Article
- *
- * Moves a published post back to draft. Called from the public blog index, so
- * it is reachable without a session: `PostService` rejects the write, as it
- * does for `saveArticleAction`. Hiding the button is tidiness, not a control.
+ * Server Action: Unpublish Article - Moves a published post back to draft.
  */
 export async function unpublishPostAction(id: string) {
   return postController.unpublishPost(id);
+}
+
+/**
+ * Server Action: Delete Draft - Permanently deletes an unpublished post
+ */
+export async function deleteDraftAction(id: string) {
+  return postController.deleteDraft(id);
 }

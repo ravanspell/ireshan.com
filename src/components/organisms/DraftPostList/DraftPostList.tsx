@@ -8,11 +8,13 @@ import type { Post } from '@modules/post/post.model';
 export interface DraftPostListProps {
   /** Unpublished posts, already ordered by the repository (last edited first). */
   drafts: Post[];
+  /** Passed to each card. */
+  onDelete?: (post: Post) => void;
 }
 
 /** The unfinished posts, or the empty state. */
 const DraftPostList = (props: DraftPostListProps) => {
-  const { drafts } = props;
+  const { drafts, onDelete } = props;
 
   if (drafts.length === 0) {
     return (
@@ -46,7 +48,7 @@ const DraftPostList = (props: DraftPostListProps) => {
     <ul id="admin-draft-list" className="flex flex-col gap-4" aria-label="Draft posts">
       {drafts.map((draft) => (
         <li key={draft.id}>
-          <DraftPostCard post={draft} />
+          <DraftPostCard post={draft} onDelete={onDelete} />
         </li>
       ))}
     </ul>

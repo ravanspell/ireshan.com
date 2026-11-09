@@ -198,6 +198,26 @@ export class PostService extends BaseService {
   }
 
   /**
+   * Permanently delete an unpublished post (its `post_tags` rows cascade).
+   *
+   * Refuses a published post: the drafts list may be stale, and "Delete draft"
+   * must never take a live post down. That's `unpublishPost`'s job.
+   */
+  @Authenticated()
+  async deleteDraft(id: string) {
+    const existing = await this.postRepository.findById(id);
+    if (!existing) {
+      this.notFound('Post', id);
+    }
+
+    if (existing.published) {
+      this.conflict('This post has been published since the list loaded. Unpublish it first.');
+    }
+
+    await this.postRepository.delete(id);
+  }
+
+  /**
    * Delete a post
    */
   @Authenticated()
