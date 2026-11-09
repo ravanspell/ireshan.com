@@ -39,3 +39,13 @@ export class BadRequestError extends DomainError {
     super(message, 'BAD_REQUEST');
   }
 }
+
+export class TooManyRequestsError extends DomainError {
+  constructor(
+    message: string,
+    /** Seconds until the caller's window resets. */
+    public readonly retryAfterSeconds: number,
+  ) {
+    super(message, 'TOO_MANY_REQUESTS');
+  }
+}

@@ -24,7 +24,6 @@ export class AiWritingService extends BaseService {
     super();
   }
 
-  // Also guards the API quota.
   @Authenticated()
   async generateParagraph({ idea, revisions }: GenerateParagraphDto): Promise<string> {
     // The idea, then each earlier draft followed by the feedback on it.

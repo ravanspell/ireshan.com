@@ -47,6 +47,18 @@ model Tag {
   @@map("tags")
 }
 
+/// Fixed-window rate-limit counters. In Postgres so all serverless instances share them.
+model RateLimit {
+  /// Bucket name plus subject, e.g. `login:ip:203.0.113.7`.
+  key         String   @id
+  count       Int
+  windowStart DateTime @map("window_start") @db.Timestamptz(3)
+
+  // Pruning deletes by age.
+  @@index([windowStart])
+  @@map("rate_limits")
+}
+
 // PostTag junction table - Many-to-many relationship
 model PostTag {
   postId String @map("post_id")

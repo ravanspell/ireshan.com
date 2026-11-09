@@ -12,6 +12,7 @@ import { Db, db } from '@lib/db';
 import { Llm } from '@lib/ai/llm';
 
 import { PostRepository } from '@repositories/post.repository';
+import { RateLimitRepository } from '@repositories/rate-limit.repository';
 import { TagRepository } from '@repositories/tag.repository';
 import { UserRepository } from '@repositories/user.repository';
 
@@ -19,6 +20,7 @@ import { AiWritingService } from '@services/ai-writing.service';
 import { AuthService } from '@services/auth.service';
 import { MediaService } from '@services/media.service';
 import { PostService } from '@services/post.service';
+import { RateLimitService } from '@services/rate-limit.service';
 import { TagService } from '@services/tag.service';
 
 import { AiWritingController } from '@controllers/ai-writing.controller';
@@ -42,6 +44,7 @@ const PROVIDERS: Constructor<unknown>[] = [
   Llm,
   // Repositories
   PostRepository,
+  RateLimitRepository,
   TagRepository,
   UserRepository,
   // Services
@@ -49,6 +52,7 @@ const PROVIDERS: Constructor<unknown>[] = [
   AuthService,
   MediaService,
   PostService,
+  RateLimitService,
   TagService,
   // Controllers
   AiWritingController,

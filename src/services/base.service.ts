@@ -12,6 +12,7 @@ export {
   ConflictError,
   UnauthorizedError,
   BadRequestError,
+  TooManyRequestsError,
 } from '@lib/errors';
 
 /**

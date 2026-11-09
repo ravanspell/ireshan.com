@@ -1,9 +1,12 @@
-import { Injectable } from '@lib/di/injectable';
+import { Injectable, inject } from '@lib/di/injectable';
 import { BaseService } from './base.service';
+import { RateLimitService } from './rate-limit.service';
 import { createClient } from '@lib/supabase/server';
 import { loginSchema, LoginFormData } from '@dtos/auth.dto';
 import { isSignedOutError } from '@lib/auth/session-errors';
 import { isSessionPastMaxAge } from '@lib/supabase/session-policy';
+import { getClientIp } from '@lib/request/client-ip';
+import { LOGIN_RATE_LIMITS } from '@lib/constants/rate-limits';
 
 /**
  * Custom error class for authentication failures.
@@ -28,16 +31,26 @@ export class AuthError extends Error {
  */
 @Injectable()
 export class AuthService extends BaseService {
-  constructor() {
+  constructor(@inject(RateLimitService) private rateLimit: RateLimitService) {
     super();
   }
 
   /**
    * Sign in with email and password.
    * Validates input defensively before forwarding to Supabase.
+   *
+   * @throws TooManyRequestsError when either limit is exceeded.
    */
   async signIn(credentials: LoginFormData): Promise<void> {
     const validated = loginSchema.parse(credentials);
+
+    // Rate-limited per IP and per email before Supabase is called. (Supabase's
+    // own limits see only our server's IP.)
+    const ip = await getClientIp();
+    const email = validated.email.trim().toLowerCase();
+    await this.rateLimit.consume(LOGIN_RATE_LIMITS.perIp, ip);
+    await this.rateLimit.consume(LOGIN_RATE_LIMITS.perEmail, email);
+
     const supabase = await createClient();
 
     const { error } = await supabase.auth.signInWithPassword({
@@ -48,6 +61,12 @@ export class AuthService extends BaseService {
     if (error) {
       throw new AuthError(error.message, error);
     }
+
+    // Success clears the counters, so earlier typos don't count toward a lockout.
+    await Promise.all([
+      this.rateLimit.reset(LOGIN_RATE_LIMITS.perIp, ip),
+      this.rateLimit.reset(LOGIN_RATE_LIMITS.perEmail, email),
+    ]);
   }
 
   /**
