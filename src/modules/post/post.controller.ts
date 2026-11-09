@@ -6,7 +6,6 @@ import {
   updatePostSchema,
   upsertPostSchema,
 } from './post.dto';
-import { revalidatePath } from 'next/cache';
 import { ROUTES } from '@lib/constants/routes';
 
 /**
@@ -19,207 +18,131 @@ export class PostController extends BaseController {
   }
 
   /**
+   * Pages that show a post: the blog index, the post itself (when its slug is
+   * known) and the admin lists.
+   */
+  private revalidatePostPages(slug?: string) {
+    this.revalidate(
+      ROUTES.BLOG.INDEX,
+      ...(slug ? [ROUTES.BLOG.POST(slug)] : []),
+      ROUTES.ADMIN.DASHBOARD,
+      ROUTES.ADMIN.DRAFTS,
+    );
+  }
+
+  // ---------- Writes ----------
+
+  /**
    * Create a new post
    * Server Action handler
    */
-  async createPost(formData: FormData) {
-    try {
-      const data = {
-        title: formData.get('title') as string,
-        slug: formData.get('slug') as string,
-        content: formData.get('content') as string,
-        tagNames: formData.getAll('tagNames') as string[],
-      };
+  createPost(formData: FormData) {
+    const input = {
+      title: formData.get('title'),
+      slug: formData.get('slug'),
+      content: formData.get('content'),
+      tagNames: formData.getAll('tagNames'),
+    };
 
-      // Validate with Zod
-      const validated = createPostSchema.parse(data);
-
-      // Create post
-      const post = await this.postService.createPost(validated);
-
-      // Revalidate cache
-      revalidatePath(ROUTES.BLOG.INDEX);
-      revalidatePath(ROUTES.BLOG.POST(post.slug));
-      revalidatePath(ROUTES.ADMIN.DASHBOARD);
-      revalidatePath(ROUTES.ADMIN.DRAFTS);
-
-      return { success: true as const, data: post };
-    } catch (error) {
-      return this.handleError(error, 'Failed to create post');
-    }
+    return this.runValidated(createPostSchema, input, 'Failed to create post', async (data) => {
+      const post = await this.postService.createPost(data);
+      this.revalidatePostPages(post.slug);
+      return post;
+    });
   }
 
   /**
    * Update an existing post
    * Server Action handler
    */
-  async updatePost(formData: FormData) {
-    try {
-      const data = {
-        id: formData.get('id') as string,
-        title: formData.get('title') as string,
-        slug: formData.get('slug') as string,
-        content: formData.get('content') as string,
-        // Absent means "leave the tags as they are", so an empty field list
-        // must stay undefined rather than becoming an empty array.
-        tagNames: formData.has('tagNames') ? (formData.getAll('tagNames') as string[]) : undefined,
-      };
+  updatePost(formData: FormData) {
+    const input = {
+      id: formData.get('id'),
+      title: formData.get('title'),
+      slug: formData.get('slug'),
+      content: formData.get('content'),
+      // Absent means "leave the tags as they are", so an empty field list
+      // must stay undefined rather than becoming an empty array.
+      tagNames: formData.has('tagNames') ? formData.getAll('tagNames') : undefined,
+    };
 
-      // Validate with Zod
-      const validated = updatePostSchema.parse(data);
-
-      // Update post
-      const post = await this.postService.updatePost(validated.id, validated);
-
-      // Revalidate cache
-      revalidatePath(ROUTES.BLOG.INDEX);
-      revalidatePath(ROUTES.BLOG.POST(post.slug));
-      revalidatePath(ROUTES.ADMIN.DASHBOARD);
-      revalidatePath(ROUTES.ADMIN.DRAFTS);
-
-      return { success: true as const, data: post };
-    } catch (error) {
-      return this.handleError(error, 'Failed to update post');
-    }
+    return this.runValidated(updatePostSchema, input, 'Failed to update post', async (data) => {
+      const post = await this.postService.updatePost(data.id, data);
+      this.revalidatePostPages(post.slug);
+      return post;
+    });
   }
 
   /**
-   * Upsert a post (create or update)
-   * Server Action handler - legacy support
+   * Upsert a post (create or update) - what the editor's save calls.
+   * Server Action handler
    */
-  async upsertPost(data: unknown) {
-    try {
-      // Validate with Zod
-      const validated = upsertPostSchema.parse(data);
-
-      // Upsert post
-      const post = await this.postService.upsertPost(validated);
-
-      // Revalidate cache
-      revalidatePath(ROUTES.BLOG.INDEX);
-      revalidatePath(ROUTES.BLOG.POST(post.slug));
-      revalidatePath(ROUTES.ADMIN.DASHBOARD);
-      revalidatePath(ROUTES.ADMIN.DRAFTS);
-
-      return { success: true as const, data: post };
-    } catch (error) {
-      return this.handleError(error, 'Failed to save post');
-    }
-  }
-
-  /**
-   * Get a published post by slug - the public blog route.
-   */
-  async getPublishedPostBySlug(slug: string) {
-    try {
-      const post = await this.postService.getPublishedPostBySlug(slug);
-      return { success: true as const, data: post };
-    } catch (error) {
-      return this.handleError(error, 'Post not found');
-    }
-  }
-
-  /**
-   * Get all published posts - the public blog index.
-   */
-  async getPublishedPosts() {
-    try {
-      const posts = await this.postService.getPublishedPosts();
-      return { success: true as const, data: posts };
-    } catch (error) {
-      return this.handleError(error, 'Failed to fetch posts');
-    }
-  }
-
-  /**
-   * Get a post by slug including drafts. Requires a session.
-   */
-  async getPostBySlug(slug: string) {
-    try {
-      const post = await this.postService.getPostBySlug(slug);
-      return { success: true as const, data: post };
-    } catch (error) {
-      return this.handleError(error, 'Post not found');
-    }
-  }
-
-  /**
-   * Get a post by id including drafts - what the editor loads. Requires a session.
-   */
-  async getPostById(id: string) {
-    try {
-      const post = await this.postService.getPostById(id);
-      return { success: true as const, data: post };
-    } catch (error) {
-      return this.handleError(error, 'Post not found');
-    }
-  }
-
-  /**
-   * Get all posts including drafts - the admin list. Requires a session.
-   */
-  async getAllPosts(options?: { includeContent?: boolean }) {
-    try {
-      const posts = await this.postService.getAllPosts(options);
-      return { success: true as const, data: posts };
-    } catch (error) {
-      return this.handleError(error, 'Failed to fetch posts');
-    }
-  }
-
-  /**
-   * Unpublished posts only - the admin drafts list. Requires a session.
-   */
-  async getDraftPosts() {
-    try {
-      const posts = await this.postService.getDraftPosts();
-      return { success: true as const, data: posts };
-    } catch (error) {
-      return this.handleError(error, 'Failed to fetch drafts');
-    }
+  upsertPost(input: unknown) {
+    return this.runValidated(upsertPostSchema, input, 'Failed to save post', async (data) => {
+      const post = await this.postService.upsertPost(data);
+      this.revalidatePostPages(post.slug);
+      return post;
+    });
   }
 
   /**
    * Move a published post back to draft
    * Server Action handler
    */
-  async unpublishPost(id: string) {
-    try {
-      // Validate with Zod
-      const validated = unpublishPostSchema.parse({ id });
-
-      // Unpublish post
-      const post = await this.postService.unpublishPost(validated.id);
-
-      // Revalidate cache - the index loses a card and the post's URL 404s.
-      revalidatePath(ROUTES.BLOG.INDEX);
-      revalidatePath(ROUTES.BLOG.POST(post.slug));
-      revalidatePath(ROUTES.ADMIN.DASHBOARD);
-      revalidatePath(ROUTES.ADMIN.DRAFTS);
-
-      // No payload - the caller needs the outcome, not the block document.
-      return { success: true as const, data: undefined };
-    } catch (error) {
-      return this.handleError(error, 'Failed to unpublish post');
-    }
+  unpublishPost(id: string) {
+    return this.runValidated(
+      unpublishPostSchema,
+      { id },
+      'Failed to unpublish post',
+      async (data) => {
+        const post = await this.postService.unpublishPost(data.id);
+        // The index loses a card and the post's URL 404s.
+        this.revalidatePostPages(post.slug);
+        // No payload - the caller needs the outcome, not the block document.
+      },
+    );
   }
 
   /**
    * Delete a post
    * Server Action handler
    */
-  async deletePost(id: string) {
-    try {
+  deletePost(id: string) {
+    return this.run('Failed to delete post', async () => {
       await this.postService.deletePost(id);
+      this.revalidatePostPages();
+    });
+  }
 
-      // Revalidate cache
-      revalidatePath(ROUTES.BLOG.INDEX);
-      revalidatePath(ROUTES.ADMIN.DASHBOARD);
-      revalidatePath(ROUTES.ADMIN.DRAFTS);
+  // ---------- Reads ----------
 
-      return { success: true as const, data: undefined };
-    } catch (error) {
-      return this.handleError(error, 'Failed to delete post');
-    }
+  /** Get a published post by slug - the public blog route. */
+  getPublishedPostBySlug(slug: string) {
+    return this.run('Post not found', () => this.postService.getPublishedPostBySlug(slug));
+  }
+
+  /** Get all published posts - the public blog index. */
+  getPublishedPosts() {
+    return this.run('Failed to fetch posts', () => this.postService.getPublishedPosts());
+  }
+
+  /** Get a post by slug including drafts. Requires a session. */
+  getPostBySlug(slug: string) {
+    return this.run('Post not found', () => this.postService.getPostBySlug(slug));
+  }
+
+  /** Get a post by id including drafts - what the editor loads. Requires a session. */
+  getPostById(id: string) {
+    return this.run('Post not found', () => this.postService.getPostById(id));
+  }
+
+  /** Get all posts including drafts - the admin list. Requires a session. */
+  getAllPosts(options?: { includeContent?: boolean }) {
+    return this.run('Failed to fetch posts', () => this.postService.getAllPosts(options));
+  }
+
+  /** Unpublished posts only - the admin drafts list. Requires a session. */
+  getDraftPosts() {
+    return this.run('Failed to fetch drafts', () => this.postService.getDraftPosts());
   }
 }

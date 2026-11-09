@@ -1,4 +1,4 @@
-import { BaseController, type ControllerResult } from '@lib/core/base.controller';
+import { BaseController } from '@lib/core/base.controller';
 import { AiWritingService } from './ai-writing.service';
 import { generateParagraphSchema } from './ai-writing.dto';
 
@@ -11,18 +11,10 @@ export class AiWritingController extends BaseController {
     super();
   }
 
-  async generateParagraph(input: unknown): Promise<ControllerResult<string>> {
-    try {
-      const validated = generateParagraphSchema.parse(input);
-
-      const text = await this.aiWritingService.generateParagraph(validated);
-
-      return {
-        success: true as const,
-        data: text,
-      };
-    } catch (error) {
-      return this.handleError(error, 'Failed to generate text');
-    }
+  /** Writes a paragraph for the editor from the author's prompt. */
+  generateParagraph(input: unknown) {
+    return this.runValidated(generateParagraphSchema, input, 'Failed to generate text', (data) =>
+      this.aiWritingService.generateParagraph(data),
+    );
   }
 }

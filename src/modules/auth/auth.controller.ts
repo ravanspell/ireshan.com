@@ -13,50 +13,20 @@ export class AuthController extends BaseController {
 
   /**
    * Login action
-   * Validates credentials and authenticates user.
-   * Validation now happens inside the service as well,
-   * so ZodError can bubble up from either layer.
+   * The service validates the credentials itself, so a `ZodError` from it
+   * still comes back as field-level `errors`.
    */
-  async login(credentials: LoginFormData) {
-    try {
-      await this.authService.signIn(credentials);
-      return { success: true as const, data: undefined };
-    } catch (error) {
-      return this.handleError(error, 'Authentication failed');
-    }
+  login(credentials: LoginFormData) {
+    return this.run('Authentication failed', () => this.authService.signIn(credentials));
   }
 
-  /**
-   * Logout action
-   * Signs out the current user
-   */
-  async logout() {
-    try {
-      await this.authService.signOut();
-      return { success: true as const, data: undefined };
-    } catch (error) {
-      return this.handleError(error, 'Logout failed');
-    }
+  /** Logout action - signs out the current user. */
+  logout() {
+    return this.run('Logout failed', () => this.authService.signOut());
   }
 
-  /**
-   * Get current user
-   * Returns null (not an error) when no user is logged in.
-   */
-  async getCurrentUser() {
-    try {
-      const user = await this.authService.getCurrentUser();
-      return { success: true as const, data: user };
-    } catch (error) {
-      return this.handleError(error, 'Failed to get user');
-    }
-  }
-
-  /**
-   * Check if authenticated
-   */
-  async isAuthenticated() {
-    const isAuth = await this.authService.isAuthenticated();
-    return { success: true as const, data: isAuth };
+  /** Get current user. Returns null (not an error) when no user is logged in. */
+  getCurrentUser() {
+    return this.run('Failed to get user', () => this.authService.getCurrentUser());
   }
 }

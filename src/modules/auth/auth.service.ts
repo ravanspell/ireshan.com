@@ -113,12 +113,4 @@ export class AuthService extends BaseService {
 
     return user;
   }
-
-  /**
-   * Check if a user is currently authenticated.
-   */
-  async isAuthenticated(): Promise<boolean> {
-    const user = await this.getCurrentUser();
-    return user !== null;
-  }
 }
