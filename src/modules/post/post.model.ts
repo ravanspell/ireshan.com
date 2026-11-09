@@ -1,7 +1,7 @@
 import type { Post as PostRow, Tag as TagRow } from '@generated/prisma/client';
-import type { EditorContent } from '@dtos/post.dto';
-import { toTag, type Tag } from './tag.model';
-import type { User } from './user.model';
+import type { EditorContent } from './post.dto';
+import { toTag, type Tag } from '@modules/tag/tag.model';
+import type { User } from '@modules/user/user.model';
 
 /**
  * Shape the repository actually selects: a post row, optionally with its join

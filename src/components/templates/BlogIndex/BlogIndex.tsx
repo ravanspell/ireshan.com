@@ -7,7 +7,7 @@ import AlertDialog from '@molecules/AlertDialog/AlertDialog';
 import BlogIndexHeader from '@molecules/BlogIndexHeader/BlogIndexHeader';
 import useIsAuthenticated from '@hooks/useIsAuthenticated';
 import { unpublishPostAction } from '@/app/actions/artical';
-import type { Post } from '@models/post.model';
+import type { Post } from '@modules/post/post.model';
 
 export interface BlogIndexProps {
   posts: Post[];

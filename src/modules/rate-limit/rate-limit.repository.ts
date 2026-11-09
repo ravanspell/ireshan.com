@@ -1,7 +1,6 @@
-import { Injectable, inject } from '@lib/di/injectable';
 import { Db } from '@lib/db';
 import { Prisma } from '@generated/prisma/client';
-import { BaseRepository } from './base.repository';
+import { BaseRepository } from '@lib/core/base.repository';
 
 export interface RateLimitHit {
   /** Hits in the current window, including this one. */
@@ -13,9 +12,8 @@ export interface RateLimitHit {
  * Fixed-window counters in `rate_limits`. Raw SQL so increment-or-reset is one
  * atomic statement, timed by the database clock.
  */
-@Injectable()
 export class RateLimitRepository extends BaseRepository {
-  constructor(@inject(Db) private db: Db) {
+  constructor(private db: Db) {
     super();
   }
 

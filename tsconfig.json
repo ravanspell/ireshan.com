@@ -6,7 +6,6 @@
     "skipLibCheck": true,
     "strict": true,
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
@@ -30,11 +29,7 @@
       "@templates/*": ["./src/components/templates/*"],
       "@hooks/*": ["./src/hooks/*"],
       "@lib/*": ["./src/lib/*"],
-      "@models/*": ["./src/models/*"],
-      "@repositories/*": ["./src/repositories/*"],
-      "@services/*": ["./src/services/*"],
-      "@controllers/*": ["./src/controllers/*"],
-      "@dtos/*": ["./src/dtos/*"]
+      "@modules/*": ["./src/modules/*"]
     }
   },
   "include": [

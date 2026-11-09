@@ -5,7 +5,7 @@ import { unstable_rethrow } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Input from '@/components/atoms/Input/Input';
-import { loginSchema, LoginFormData } from '@dtos/auth.dto';
+import { loginSchema, LoginFormData } from '@modules/auth/auth.dto';
 
 export interface LoginFormProps {
   /**

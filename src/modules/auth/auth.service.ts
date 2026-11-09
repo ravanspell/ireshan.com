@@ -1,8 +1,7 @@
-import { Injectable, inject } from '@lib/di/injectable';
-import { BaseService } from './base.service';
-import { RateLimitService } from './rate-limit.service';
+import { BaseService } from '@lib/core/base.service';
+import { RateLimitService } from '@modules/rate-limit/rate-limit.service';
 import { createClient } from '@lib/supabase/server';
-import { loginSchema, LoginFormData } from '@dtos/auth.dto';
+import { loginSchema, LoginFormData } from './auth.dto';
 import { isSignedOutError } from '@lib/auth/session-errors';
 import { isSessionPastMaxAge } from '@lib/supabase/session-policy';
 import { getClientIp } from '@lib/request/client-ip';
@@ -29,9 +28,8 @@ export class AuthError extends Error {
  * A fresh Supabase server client is created per call since it reads
  * the current request's cookies() - it cannot be cached on the instance.
  */
-@Injectable()
 export class AuthService extends BaseService {
-  constructor(@inject(RateLimitService) private rateLimit: RateLimitService) {
+  constructor(private rateLimit: RateLimitService) {
     super();
   }
 
@@ -114,13 +112,5 @@ export class AuthService extends BaseService {
     }
 
     return user;
-  }
-
-  /**
-   * Check if a user is currently authenticated.
-   */
-  async isAuthenticated(): Promise<boolean> {
-    const user = await this.getCurrentUser();
-    return user !== null;
   }
 }

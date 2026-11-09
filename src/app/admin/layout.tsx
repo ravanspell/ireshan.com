@@ -1,14 +1,13 @@
+import { authController } from '@lib/composition';
 import { cookies } from 'next/headers';
 import AdminSidebar from '@molecules/AdminSidebar/AdminSidebar';
 import AdminSiteHeader from '@molecules/AdminSiteHeader/AdminSiteHeader';
 import type { AdminUser } from '@molecules/AdminNavUser/AdminNavUser';
 import { SidebarInset, SidebarProvider } from '@/components/atoms/sidebar';
-import { resolve } from '@/lib/di/container';
-import { AuthController } from '@controllers/auth.controller';
 
 /** Only the fields the sidebar shows - the full Supabase user never reaches the client. */
 async function getAdminUser(): Promise<AdminUser | null> {
-  const result = await resolve(AuthController).getCurrentUser();
+  const result = await authController.getCurrentUser();
   const user = result.success ? result.data : null;
 
   if (!user?.email) return null;

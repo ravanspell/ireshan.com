@@ -1,9 +1,8 @@
 'use server';
 
+import { authController } from '@lib/composition';
 import { redirect } from 'next/navigation';
-import { resolve } from '@/lib/di/container';
-import { AuthController } from '@controllers/auth.controller';
-import { LoginFormData } from '@dtos/auth.dto';
+import { LoginFormData } from '@modules/auth/auth.dto';
 import { ROUTES } from '@/lib/constants/routes';
 import { resolveNextPath } from '@/lib/auth/redirect';
 
@@ -17,8 +16,6 @@ import { resolveNextPath } from '@/lib/auth/redirect';
  * @returns Object with errors if validation/authentication fails, otherwise redirects
  */
 export async function loginAction(next: string, credentials: LoginFormData) {
-  const authController = resolve(AuthController);
-
   const result = await authController.login(credentials);
 
   if (!result.success) {
@@ -39,9 +36,6 @@ export async function loginAction(next: string, credentials: LoginFormData) {
  * Signs out the current user and redirects to the login page.
  */
 export async function logoutAction() {
-  // Get AuthController from DI container
-  const authController = resolve(AuthController);
-
   // Execute logout via controller
   const result = await authController.logout();
 
