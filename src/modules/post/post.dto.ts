@@ -100,9 +100,18 @@ export const unpublishPostSchema = z.object({
 });
 
 /**
+ * Delete Draft Schema
+ * Id only - the service decides whether the post can be deleted.
+ */
+export const deleteDraftSchema = z.object({
+  id: z.uuid('Invalid post ID'),
+});
+
+/**
  * Type Definitions
  */
 export type CreatePostDto = z.infer<typeof createPostSchema>;
 export type UpdatePostDto = z.infer<typeof updatePostSchema>;
 export type UpsertPostDto = z.infer<typeof upsertPostSchema>;
 export type UnpublishPostDto = z.infer<typeof unpublishPostSchema>;
+export type DeleteDraftDto = z.infer<typeof deleteDraftSchema>;
